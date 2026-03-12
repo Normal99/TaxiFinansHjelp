@@ -156,6 +156,36 @@
             return DRIVER_NAME_MAP[str] || str;
         }
 
+        // ============================
+        // INDEXEDDB DOCUMENT STORAGE
+        // ============================
+
+        let db;
+
+        function initDB() {
+            const request = indexedDB.open("TaxiAnalyzerDB", 1);
+
+            request.onupgradeneeded = function(e) {
+                db = e.target.result;
+
+                if (!db.objectStoreNames.contains("documents")) {
+                    const store = db.createObjectStore("documents", {
+                        keyPath: "id",
+                        autoIncrement: true
+                    });
+
+                    store.createIndex("date", "date");
+                }
+            };
+
+            request.onsuccess = function(e) {
+                db = e.target.result;
+                loadRecentDocuments();
+            };
+        }
+
+        initDB();
+
         // ============ FILE UPLOAD ============
         document.getElementById('fileInput').addEventListener('change', handleFileUpload);
 
@@ -188,6 +218,7 @@
                     processHeaders();
                     detectDriverColumnIMPROVED();
                     processAllData();
+                    saveDocument(file.name, rawData);
                 } catch (err) {
                     log('❌ ' + err.message);
                     showError(err.message);
@@ -196,6 +227,21 @@
             };
             reader.onerror = () => { showError(t('errRead')); resetView(); };
             reader.readAsArrayBuffer(file);
+        }
+
+        function saveDocument(name, data) {
+
+            if (!db) return;
+
+            const tx = db.transaction("documents", "readwrite");
+            const store = tx.objectStore("documents");
+
+            store.add({
+                name: name,
+                date: new Date(),
+                rows: data.length,
+                data: data
+            });
         }
 
         // ============ PROCESS HEADERS ============
@@ -305,6 +351,64 @@
             if (!val || typeof val !== 'string') return 0;
             const n = parseFloat(val);
             return Number.isFinite(n) ? n : 0;
+        }
+
+        function openSavedDocument(id) {
+
+            const tx = db.transaction("documents", "readonly");
+            const store = tx.objectStore("documents");
+
+            const request = store.get(id);
+
+            request.onsuccess = function() {
+
+                const doc = request.result;
+
+                if (!doc) return;
+
+                rawData = doc.data;
+
+                processHeaders();
+                detectDriverColumnIMPROVED();
+                processAllData();
+            };
+        }
+
+        function loadRecentDocuments() {
+
+            if (!db) return;
+
+            const tx = db.transaction("documents", "readonly");
+            const store = tx.objectStore("documents");
+
+            const request = store.getAll();
+
+            request.onsuccess = function() {
+
+                const docs = request.result
+                    .sort((a,b) => new Date(b.date) - new Date(a.date))
+                    .slice(0,10);
+
+                const container = document.getElementById("recentList");
+
+                container.innerHTML = "";
+
+                docs.forEach(doc => {
+
+                    const div = document.createElement("div");
+                    div.className = "recent-item";
+
+                    div.innerHTML = `
+                        <strong>${doc.name}</strong><br>
+                        ${doc.rows} rows<br>
+                        ${new Date(doc.date).toLocaleString()}
+                    `;
+
+                    div.onclick = () => openSavedDocument(doc.id);
+
+                    container.appendChild(div);
+                });
+            };
         }
 
         function fmt(n) { return n.toLocaleString('nb-NO', { minimumFractionDigits: 2 }); }

@@ -180,6 +180,24 @@
             margin-top: 10px;
         }
 
+        .recent-docs {
+            margin-bottom: 30px;
+        }
+
+        .recent-item {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .recent-item:hover {
+            border-color: var(--accent);
+        }
+
         .btn-upload {
             background: var(--accent);
             color: #000;
