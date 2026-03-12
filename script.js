@@ -502,6 +502,11 @@
             if (!e.target.value) renderMainTable(); else filterByDriver(e.target.value);
         });
 
+        // ============ SERVICE PHONE ===========
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js");
+        }
+
         // ============ ERRORS / UTILS ============
         function showError(message) {
             document.getElementById('errorContainer').innerHTML = `

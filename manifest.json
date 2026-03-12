@@ -1,0 +1,21 @@
+{
+  "name": "Sjåfør Analyse",
+  "short_name": "Sjåfør",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0B0D12",
+  "theme_color": "#F7C520",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
