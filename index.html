@@ -30,12 +30,13 @@
 
     <div class="container">
 
-        <div class="recent-docs">
-            <h2>Recent Documents</h2>
+        <!-- RECENT DOCUMENTS - Hidden when document loaded -->
+        <div id="recentDocsSection" class="recent-docs">
+            <h2 data-i18n="recentDocs">Nylige dokumenter</h2>
             <div id="recentList"></div>
         </div>
 
-        <!-- UPLOAD -->
+        <!-- UPLOAD SECTION - Hidden when document loaded -->
         <div id="uploadSection">
             <div class="upload-eyebrow">TE4 · Taxidata</div>
             <h1 class="upload-title" data-i18n="uploadTitle">Last opp<br>Excel-fil</h1>
@@ -83,7 +84,7 @@
                             <span class="select-label" data-i18n="sortBy">SORTER:</span>
                             <select id="sortSelect">
                                 <option value="none" data-i18n="sortNone">Ingen</option>
-                                <option value="amount_desc" data-i18n="sortWages">Lønngrunnlag ↓</option>
+                                <option value="amount_desc" data-i18n="sortWages">Lønnsgrunnlag ↓</option>
                                 <option value="kms_desc" data-i18n="sortKms">KM ↓</option>
                             </select>
                         </div>
@@ -144,6 +145,7 @@
                 errRead: 'Kunne ikke lese filen',
                 errFailed: 'Feil ved lesing av fil',
                 errRetry: 'Klikk OK for å prøve igjen',
+                recentDocs: 'Nylige dokumenter',
                 cols: {
                     'Løyve': 'Løyvenummer', 'Reg. nr.': 'Reg.nr.', 'Org. nr.': 'Org.nr.',
                     'Sjåførnr.': 'Sjåførnr.', 'Skiftnr.': 'Skiftnr.', 'Serienr.': 'Serienr.',
@@ -201,6 +203,7 @@
                 errRead: 'Dosya okunamadı',
                 errFailed: 'Dosya okuma hatası',
                 errRetry: "Tekrar denemek için Tamam'a tıklayın",
+                recentDocs: 'Son belgeler',
                 cols: {
                     'Løyve': 'Taksi Lisansı', 'Reg. nr.': 'Plaka No.', 'Org. nr.': 'Vergi No.',
                     'Sjåførnr.': 'Sürücü No.', 'Skiftnr.': 'Vardiya No.', 'Serienr.': 'Seri No.',
@@ -224,7 +227,7 @@
                     'Kasse differanse': 'Kasa Farkı', 'Kasse start dato': 'Kasa Tarihi (Baş.)',
                     'Kasse start tid': 'Kasa Saati (Baş.)', 'Kasse stopp dato': 'Kasa Tarihi (Bit.)',
                     'Kasse stopp tid': 'Kasa Saati (Bit.)', 'Effektiv timer': 'Etkin Saat',
-                    'Effektiv minutter': 'Etkin Dakika',
+                    'Effektiv minutes': 'Etkin Dakika',
                 }
             }
         };
@@ -233,25 +236,9 @@
         function t(key) { return translations[currentLang][key] || translations['no'][key] || key; }
         function colLabel(k) { return (translations[currentLang].cols || {})[k] || k; }
 
-        function setLang(lang) {
-            currentLang = lang;
-            document.getElementById('langNO').className = 'lang-btn' + (lang === 'no' ? ' active' : '');
-            document.getElementById('langTR').className = 'lang-btn' + (lang === 'tr' ? ' active' : '');
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                el.textContent = t(el.getAttribute('data-i18n'));
-            });
-            const allOpt = document.querySelector('#driverFilter option[value=""]');
-            if (allOpt) allOpt.textContent = t('allDrivers');
-            if (rawData.length > 0) {
-                const allDrivers = Object.keys(driverData).sort();
-                calculateGlobalStats(allDrivers);
-                createDriverSummaryCards(allDrivers);
-                renderMainTable();
-            }
-        }
-
         // ============ GLOBALS ============
         let rawData = [], headers = [], driverData = {}, detectedDriverColumnIndex = -1;
+        let db = null;
 
         function log(msg) {
             const c = document.getElementById('debugConsole');
@@ -269,8 +256,81 @@
             return DRIVER_NAME_MAP[str] || str;
         }
 
+        // ============================
+        // INDEXEDDB DOCUMENT STORAGE
+        // ============================
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open("TaxiAnalyzerDB", 2);
+
+                request.onupgradeneeded = function(e) {
+                    db = e.target.result;
+                    console.log('Database upgraded');
+
+                    // Check if documents store exists
+                    try {
+                        if (!db.objectStoreNames.contains("documents")) {
+                            const store = db.createObjectStore("documents", { keyPath: "id", autoIncrement: true });
+                            store.createIndex("date", "date");
+                            console.log('Created documents store');
+                        }
+                    } catch (err) {
+                        console.error('Error creating store:', err);
+                    }
+                };
+
+                request.onsuccess = function(e) {
+                    db = e.target.result;
+                    console.log('Database opened successfully');
+                    resolve();
+                    loadRecentDocuments();
+                };
+
+                request.onerror = function() {
+                    console.error('Failed to open database:', db.error);
+                    reject(db.error || 'Unknown error');
+                };
+            });
+        }
+
+        // Initialize DB when DOM is ready
+        document.addEventListener('DOMContentLoaded', initDB);
+
+        async function saveDocument(name, data) {
+            if (!db) {
+                console.warn('Database not initialized yet, saving anyway');
+                setTimeout(() => saveDocument(name, data), 100);
+                return;
+            }
+
+            try {
+                // Create a copy of the data that can be serialized
+                const docData = JSON.parse(JSON.stringify(data));
+                
+                const tx = db.transaction("documents", "readwrite");
+                const store = tx.objectStore("documents");
+
+                await new Promise((resolve, reject) => {
+                    const request = store.add({
+                        name: name,
+                        date: new Date(),
+                        rows: data.length,
+                        data: docData
+                    });
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            } catch (err) {
+                console.error('Error saving document:', err);
+            }
+        }
+
         // ============ FILE UPLOAD ============
-        document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', handleFileUpload);
+        }
 
         // Drag and drop
         const dz = document.getElementById('dropZone');
@@ -280,16 +340,24 @@
             dz.addEventListener('drop', e => {
                 e.preventDefault(); dz.style.borderColor = '';
                 const f = e.dataTransfer.files[0];
-                if (f) { const dt = new DataTransfer(); dt.items.add(f); document.getElementById('fileInput').files = dt.files; handleFileUpload({ target: { files: dt.files } }); }
+                if (f) {
+                    const dt = new DataTransfer();
+                    dt.items.add(f);
+                    fileInput.files = dt.files;
+                    handleFileUpload({ target: { files: dt.files } });
+                }
             });
         }
 
         function handleFileUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
+            
+            // Hide upload section, show loading
             document.getElementById('uploadSection').style.display = 'none';
             document.getElementById('loading').style.display = 'block';
             document.getElementById('resultsSection').style.display = 'none';
+            
             const reader = new FileReader();
             reader.onload = function(event) {
                 try {
@@ -301,6 +369,8 @@
                     processHeaders();
                     detectDriverColumnIMPROVED();
                     processAllData();
+                    // Save to IndexedDB
+                    setTimeout(() => saveDocument(file.name, rawData), 100);
                 } catch (err) {
                     log('❌ ' + err.message);
                     showError(err.message);
@@ -311,8 +381,91 @@
             reader.readAsArrayBuffer(file);
         }
 
+        function loadRecentDocuments() {
+            if (!db) {
+                console.warn('Database not ready yet');
+                setTimeout(loadRecentDocuments, 100);
+                return;
+            }
+
+            try {
+                const tx = db.transaction("documents", "readonly");
+                const store = tx.objectStore("documents");
+                const request = store.getAll();
+
+                request.onsuccess = function() {
+                    const docs = request.result
+                        .sort((a,b) => new Date(b.date) - new Date(a.date))
+                        .slice(0,10);
+
+                    if (docs.length === 0) return;
+
+                    const container = document.getElementById("recentList");
+                    container.innerHTML = "";
+
+                    docs.forEach(doc => {
+                        const div = document.createElement("div");
+                        div.className = "recent-item";
+                        div.innerHTML = `
+                            <strong>${doc.name}</strong><br>
+                            ${doc.rows} rows<br>
+                            ${new Date(doc.date).toLocaleString()}
+                        `;
+                        div.onclick = () => openSavedDocument(doc.id);
+                        container.appendChild(div);
+                    });
+                };
+            } catch (err) {
+                console.error('Error loading recent documents:', err);
+            }
+        }
+
+        function openSavedDocument(id) {
+            if (!db) return;
+
+            try {
+                const tx = db.transaction("documents", "readonly");
+                const store = tx.objectStore("documents");
+                const request = store.get(id);
+
+                request.onsuccess = function() {
+                    const doc = request.result;
+                    if (!doc) return;
+
+                    // Reset state before loading
+                    rawData = [];
+                    headers = [];
+                    driverData = {};
+                    detectedDriverColumnIndex = -1;
+                    
+                    // Load document data
+                    rawData = JSON.parse(JSON.stringify(doc.data));
+                    processHeaders();
+                    detectDriverColumnIMPROVED();
+                    processAllData();
+                };
+            } catch (err) {
+                console.error('Error opening saved document:', err);
+            }
+        }
+
+        function resetView() {
+            // Hide results and upload, show loading initially
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('uploadSection').style.display = 'flex';
+            
+            // Reset global data
+            rawData = [];
+            headers = [];
+            driverData = {};
+            detectedDriverColumnIndex = -1;
+        }
+
         // ============ PROCESS HEADERS ============
         function processHeaders() {
+            if (!rawData || rawData.length === 0) return;
+            
             const originalKeys = Object.keys(rawData[0]);
             const cumulativeColumns = [
                 'start total innkjørt','stopp total innkjørt','start total mva','stopp total mva',
@@ -610,21 +763,22 @@
         }
 
         // ============ CONTROLS ============
-        document.getElementById('sortSelect').addEventListener('change', renderMainTable);
-        document.getElementById('driverFilter').addEventListener('change', function(e) {
-            if (!e.target.value) renderMainTable(); else filterByDriver(e.target.value);
+        document.addEventListener('DOMContentLoaded', function() {
+            const sortSelect = document.getElementById('sortSelect');
+            if (sortSelect) sortSelect.addEventListener('change', renderMainTable);
+            
+            const driverFilter = document.getElementById('driverFilter');
+            if (driverFilter) {
+                driverFilter.addEventListener('change', function(e) {
+                    if (!e.target.value) renderMainTable(); else filterByDriver(e.target.value);
+                });
+            }
         });
 
         // ============ ERRORS / UTILS ============
         function showError(message) {
             document.getElementById('errorContainer').innerHTML = `
                 <div class="error-box"><h3>❌ ${t('errFailed')}</h3><p>${message}</p><p style="margin-top:6px;opacity:0.7;font-size:0.82rem;">${t('errRetry')}</p></div>`;
-        }
-
-        function resetView() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('resultsSection').style.display = 'none';
-            document.getElementById('uploadSection').style.display = 'flex';
         }
 
         function escapeString(str) { return String(str).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
