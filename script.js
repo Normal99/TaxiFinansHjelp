@@ -139,7 +139,7 @@ function setLang(lang) {
 
 // ============ GLOBALS ============
 let rawData = [], headers = [], driverData = {}, detectedDriverColumnIndex = -1;
-const recentItemsClickHandlerSetupDone = false; // Track if we've already set up the handler
+const recentItemsHandlerSetupDone = false; // Track if we've already set up the handler
 
 function log(msg) {
     const c = document.getElementById('debugConsole');
@@ -218,7 +218,10 @@ if (dz) {
 function handleFileUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
-    document.getElementById('uploadSection').style.display = 'none';
+    
+    // Hide both sections when upload starts - this is critical!
+    hideBothSections();
+    
     document.getElementById('loading').style.display = 'block';
     document.getElementById('resultsSection').style.display = 'none';
     const reader = new FileReader();
@@ -346,7 +349,7 @@ function processAllData() {
     createDriverSummaryCards(allDrivers);
     renderMainTable();
     document.getElementById('loading').style.display = 'none';
-    hideUploadAndShowResults();
+    hideUploadAndShowResults(); // Hides both sections and shows results
     document.getElementById('dataTable').style.display = '';
     const pill = document.getElementById('driverCountPill');
     if (pill) pill.textContent = allDrivers.length + ' ' + t('statDrivers').toLowerCase();
@@ -379,6 +382,9 @@ function openSavedDocument(id) {
     if (!db) return;
 
     try {
+        // HIDE SECTIONS BEFORE LOADING - This is the key fix!
+        hideBothSections();
+                
         const tx = db.transaction("documents", "readonly");
         const store = tx.objectStore("documents");
         const request = store.get(id);
@@ -651,18 +657,16 @@ function filterByDriver(driverName) {
 }
 
 // ============ UI STATE MANAGEMENT ============
-function hideUploadAndShowResults() {
+function hideBothSections() {
+    // Simple and reliable - just hide both sections immediately
     const uploadSection = document.getElementById('uploadSection');
     const recentDocsSection = document.getElementById('recentDocsSection');
-    const resultsSection = document.getElementById('resultsSection');
     
     if (uploadSection) uploadSection.style.display = 'none';
     if (recentDocsSection) recentDocsSection.style.display = 'none';
-    if (resultsSection) {
-        resultsSection.style.display = 'block';
-        resultsSection.classList.add('visible');
-    }
 }
+
+
 
 function showUploadAndRecentDocs() {
     const uploadSection = document.getElementById('uploadSection');
