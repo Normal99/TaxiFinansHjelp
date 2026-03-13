@@ -1,726 +1,628 @@
-// ============ TRANSLATIONS ============
-const translations = {
-    no: {
-        title: 'Sjåfør',
-        subtitle: 'Analyser skiftdata, km og inntekter per sjåfør',
-        uploadTitle: 'Last opp\nExcel-fil',
-        uploadSub: 'Støtter .xlsx og .xls — gjenkjenner sjåførkolonne automatisk',
-        chooseFile: 'Velg fil',
-        dragDrop: 'Klikk eller dra og slipp Excel-filen her',
-        filterBy: 'FILTRER:',
-        allDrivers: 'Alle sjåfører',
-        sortBy: 'SORTER:',
-        sortNone: 'Ingen',
-        sortWages: 'Lønnsgrunnlag ↓',
-        sortKms: 'KM ↓',
-        tableTitle: 'Skift',
-        tableSub: 'Viser alle data med totaler per sjåfør',
-        loading: 'Laster data...',
-        cardsTitle: 'Sjåføroversikt',
-        cardsSub: 'Klikk på et kort for å filtrere tabellen',
-        statShifts: 'SKIFT', statDrivers: 'SJÅFØRER',
-        statWages: 'LØNNSGRUNNLAG', statCash: 'KONTANT', statKm: 'TOTAL KM',
-        cardShifts: 'SKIFT', cardWages: 'LØNNSGRUNNLAG', cardCash: 'KONTANT',
-        cardKm: 'KM', cardAvgWage: 'SNITT/SKIFT', cardAvgKm: 'SNITT KM',
-        cardClickHint: 'Klikk for å filtrere',
-        colCount: '#',
-        totalRow: 'TOTAL',
-        records: 'skift',
-        noData: 'Ingen gyldige data',
-        errEmpty: 'Filen er tom eller har ingen data',
-        errRead: 'Kunne ikke lese filen',
-        errFailed: 'Feil ved lesing av fil',
-        errRetry: 'Klikk OK for å prøve igjen',
-        cols: {
-            'Løyve': 'Løyvenummer', 'Reg. nr.': 'Reg.nr.', 'Org. nr.': 'Org.nr.',
-            'Sjåførnr.': 'Sjåførnr.', 'Skiftnr.': 'Skiftnr.', 'Serienr.': 'Serienr.',
-            'Km mellom skift': 'KM mellom skift', 'Start dato': 'Startdato',
-            'Start tid': 'Starttid', 'Stopp dato': 'Stoppdato', 'Stopp tid': 'Stopptid',
-            'Antall turer': 'Turer', 'Km total': 'KM totalt',
-            'Km besatt': 'KM besatt', 'Km opptatt': 'KM opptatt',
-            'Start total innkjørt': 'Teller innkjørt (start)', 'Stopp total innkjørt': 'Teller innkjørt (stopp)',
-            'Start total MVA': 'Teller MVA (start)', 'Stopp total MVA': 'Teller MVA (stopp)',
-            'Start total km': 'Teller KM (start)', 'Stop total km': 'Teller KM (stopp)',
-            'Innkjørt total Lav sats': 'Innkjørt totalt (lav)', 'Innkjørt total Høy sats': 'Innkjørt totalt (høy)',
-            'Innkjørt total 0%': 'Innkjørt totalt (0%)', 'Til oppgjør Lav sats': 'Til oppgjør (lav)',
-            'Til oppgjør Høy sats': 'Til oppgjør (høy)', 'Til oppgjør 0%': 'Til oppgjør (0%)',
-            'Lønnsgrunnlag': 'Lønnsgrunnlag', 'Faktisk kont.': 'Faktisk kontant',
-            'Tips (kont.)': 'Tips (kontant)', 'Tips (kred.)': 'Tips (kort)', 'Tips (kont.) 2': 'Tips (kontant) 2',
-            'Drivstoff': 'Drivstoff', 'Drivstoff (liter)': 'Drivstoff (liter)',
-            'Vask': 'Vask', 'Rekvisita': 'Rekvisita', 'Forskudd': 'Forskudd',
-            'Netto 1': 'Netto 1', 'Netto 2': 'Netto 2',
-            'Kasse ved start': 'Kasse (start)', 'Kasse tilført': 'Kasse tilført',
-            'Kasse ved slutt': 'Kasse (slutt)', 'Kasse opptelling': 'Kasseopptelling',
-            'Kasse differanse': 'Kassedifferanse', 'Kasse start dato': 'Kassedato (start)',
-            'Kasse start tid': 'Kassetid (start)', 'Kasse stopp dato': 'Kassedato (stopp)',
-            'Kasse stopp tid': 'Kassetid (stopp)', 'Effektiv timer': 'Effektive timer',
-            'Effektiv minutter': 'Effektive minutter',
-        }
-    },
-    tr: {
-        title: 'Sürücü',
-        subtitle: 'Vardiya verilerini, km ve kazançları sürücüye göre analiz et',
-        uploadTitle: 'Excel Dosyası\nYükle',
-        uploadSub: '.xlsx ve .xls desteklenir — sürücü sütunu otomatik algılanır',
-        chooseFile: 'Dosya Seç',
-        dragDrop: 'Excel dosyasını buraya tıklayın veya sürükleyip bırakın',
-        filterBy: 'FİLTRE:',
-        allDrivers: 'Tüm Sürücüler',
-        sortBy: 'SIRALA:',
-        sortNone: 'Sırasız',
-        sortWages: 'Ücret ↓',
-        sortKms: 'KM ↓',
-        tableTitle: 'Vardiyalar',
-        tableSub: 'Sürücü başına toplamlarla tüm veriler',
-        loading: 'Veriler yükleniyor...',
-        cardsTitle: 'Sürücü Özeti',
-        cardsSub: 'Tabloyu filtrelemek için bir karta tıklayın',
-        statShifts: 'VARDİYA', statDrivers: 'SÜRÜCÜLER',
-        statWages: 'ÜCRET TABANI', statCash: 'NAKİT', statKm: 'TOPLAM KM',
-        cardShifts: 'VARDİYA', cardWages: 'ÜCRET', cardCash: 'NAKİT',
-        cardKm: 'KM', cardAvgWage: 'ORT/VARDİYA', cardAvgKm: 'ORT KM',
-        cardClickHint: 'Filtrelemek için tıklayın',
-        colCount: '#',
-        totalRow: 'TOPLAM',
-        records: 'vardiya',
-        noData: 'Geçerli veri yok',
-        errEmpty: 'Dosya boş veya veri içermiyor',
-        errRead: 'Dosya okunamadı',
-        errFailed: 'Dosya okuma hatası',
-        errRetry: "Tekrar denemek için Tamam'a tıklayın",
-        cols: {
-            'Løyve': 'Taksi Lisansı', 'Reg. nr.': 'Plaka No.', 'Org. nr.': 'Vergi No.',
-            'Sjåførnr.': 'Sürücü No.', 'Skiftnr.': 'Vardiya No.', 'Serienr.': 'Seri No.',
-            'Km mellom skift': 'Vardiyalar Arası KM', 'Start dato': 'Başlangıç Tarihi',
-            'Start tid': 'Başlangıç Saati', 'Stopp dato': 'Bitiş Tarihi', 'Stopp tid': 'Bitiş Saati',
-            'Antall turer': 'Sefer', 'Km total': 'Toplam KM',
-            'Km besatt': 'Yolculu KM', 'Km opptatt': 'Dolu KM',
-            'Start total innkjørt': 'Sayaç Gelir (Baş.)', 'Stopp total innkjørt': 'Sayaç Gelir (Bit.)',
-            'Start total MVA': 'Sayaç KDV (Baş.)', 'Stopp total MVA': 'Sayaç KDV (Bit.)',
-            'Start total km': 'Sayaç KM (Baş.)', 'Stop total km': 'Sayaç KM (Bit.)',
-            'Innkjørt total Lav sats': 'Fatura Toplam (Düşük)', 'Innkjørt total Høy sats': 'Fatura Toplam (Yüksek)',
-            'Innkjørt total 0%': 'Fatura Toplam (%0)', 'Til oppgjør Lav sats': 'Hesaplaşma (Düşük)',
-            'Til oppgjør Høy sats': 'Hesaplaşma (Yüksek)', 'Til oppgjør 0%': 'Hesaplaşma (%0)',
-            'Lønnsgrunnlag': 'Ücret Tabanı', 'Faktisk kont.': 'Nakit Tahsilat',
-            'Tips (kont.)': 'Bahşiş (Nakit)', 'Tips (kred.)': 'Bahşiş (Kart)', 'Tips (kont.) 2': 'Bahşiş (Nakit) 2',
-            'Drivstoff': 'Yakıt', 'Drivstoff (liter)': 'Yakıt (Litre)',
-            'Vask': 'Araç Yıkama', 'Rekvisita': 'Malzeme', 'Forskudd': 'Avans',
-            'Netto 1': 'Net Nakit 1', 'Netto 2': 'Net Nakit 2',
-            'Kasse ved start': 'Kasa (Baş.)', 'Kasse tilført': 'Kasaya Eklenen',
-            'Kasse ved slutt': 'Kasa (Bit.)', 'Kasse opptelling': 'Kasa Sayımı',
-            'Kasse differanse': 'Kasa Farkı', 'Kasse start dato': 'Kasa Tarihi (Baş.)',
-            'Kasse start tid': 'Kasa Saati (Baş.)', 'Kasse stopp dato': 'Kasa Tarihi (Bit.)',
-            'Kasse stopp tid': 'Kasa Saati (Bit.)', 'Effektiv timer': 'Etkin Saat',
-            'Effektiv minutter': 'Etkin Dakika',
-        }
-    }
-};
-
-let currentLang = 'no';
-function t(key) { return translations[currentLang][key] || translations['no'][key] || key; }
-function colLabel(k) { return (translations[currentLang].cols || {})[k] || k; }
-
-function setLang(lang) {
-    currentLang = lang;
-    document.getElementById('langNO').className = 'lang-btn' + (lang === 'no' ? ' active' : '');
-    document.getElementById('langTR').className = 'lang-btn' + (lang === 'tr' ? ' active' : '');
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        el.textContent = t(el.getAttribute('data-i18n'));
-    });
-    const allOpt = document.querySelector('#driverFilter option[value=""]');
-    if (allOpt) allOpt.textContent = t('allDrivers');
-    if (rawData.length > 0) {
-        const allDrivers = Object.keys(driverData).sort();
-        calculateGlobalStats(allDrivers);
-        createDriverSummaryCards(allDrivers);
-        renderMainTable();
-    }
-}
-
-// ============ GLOBALS ============
-let rawData = [], headers = [], driverData = {}, detectedDriverColumnIndex = -1;
-const recentItemsHandlerSetupDone = false; // Track if we've already set up the handler
-
-function log(msg) {
-    const c = document.getElementById('debugConsole');
-    if (c && !c.style.display.includes('none')) { c.textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`; c.scrollTop = c.scrollHeight; }
-}
-
-// Driver ID -> Name mapping
-const DRIVER_NAME_MAP = {
-    "440004": "Erkan",
-    "444735": "Ersan"
-};
-
-function mapDriverName(value) {
-    const str = String(value).trim();
-    return DRIVER_NAME_MAP[str] || str;
-}
-
-// ============================
-// INDEXEDDB DOCUMENT STORAGE
-// ============================
-
-let db = null;
-
-async function openDatabase() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open("TaxiAnalyzerDB", 2);
-
-        request.onupgradeneeded = function(e) {
-            db = e.target.result;
-            console.log('Database upgraded');
-            try {
-                if (!db.objectStoreNames.contains("documents")) {
-                    const store = db.createObjectStore("documents", { keyPath: "id", autoIncrement: true });
-                    store.createIndex("date", "date");
-                    console.log('Created documents store');
+        // ============ TRANSLATIONS ============
+        const translations = {
+            no: {
+                title: 'Sjåfør',
+                subtitle: 'Analyser skiftdata, km og inntekter per sjåfør',
+                uploadTitle: 'Last opp\nExcel-fil',
+                uploadSub: 'Støtter .xlsx og .xls — gjenkjenner sjåførkolonne automatisk',
+                chooseFile: 'Velg fil',
+                dragDrop: 'Klikk eller dra og slipp Excel-filen her',
+                filterBy: 'FILTRER:',
+                allDrivers: 'Alle sjåfører',
+                sortBy: 'SORTER:',
+                sortNone: 'Ingen',
+                sortWages: 'Lønnsgrunnlag ↓',
+                sortKms: 'KM ↓',
+                tableTitle: 'Skift',
+                tableSub: 'Viser alle data med totaler per sjåfør',
+                loading: 'Laster data...',
+                cardsTitle: 'Sjåføroversikt',
+                cardsSub: 'Klikk på et kort for å filtrere tabellen',
+                statShifts: 'SKIFT', statDrivers: 'SJÅFØRER',
+                statWages: 'LØNNSGRUNNLAG', statCash: 'KONTANT', statKm: 'TOTAL KM',
+                cardShifts: 'SKIFT', cardWages: 'LØNNSGRUNNLAG', cardCash: 'KONTANT',
+                cardKm: 'KM', cardAvgWage: 'SNITT/SKIFT', cardAvgKm: 'SNITT KM',
+                cardClickHint: 'Klikk for å filtrere',
+                colCount: '#',
+                totalRow: 'TOTAL',
+                records: 'skift',
+                noData: 'Ingen gyldige data',
+                errEmpty: 'Filen er tom eller har ingen data',
+                errRead: 'Kunne ikke lese filen',
+                errFailed: 'Feil ved lesing av fil',
+                errRetry: 'Klikk OK for å prøve igjen',
+                cols: {
+                    'Løyve': 'Løyvenummer', 'Reg. nr.': 'Reg.nr.', 'Org. nr.': 'Org.nr.',
+                    'Sjåførnr.': 'Sjåførnr.', 'Skiftnr.': 'Skiftnr.', 'Serienr.': 'Serienr.',
+                    'Km mellom skift': 'KM mellom skift', 'Start dato': 'Startdato',
+                    'Start tid': 'Starttid', 'Stopp dato': 'Stoppdato', 'Stopp tid': 'Stopptid',
+                    'Antall turer': 'Turer', 'Km total': 'KM totalt',
+                    'Km besatt': 'KM besatt', 'Km opptatt': 'KM opptatt',
+                    'Start total innkjørt': 'Teller innkjørt (start)', 'Stopp total innkjørt': 'Teller innkjørt (stopp)',
+                    'Start total MVA': 'Teller MVA (start)', 'Stopp total MVA': 'Teller MVA (stopp)',
+                    'Start total km': 'Teller KM (start)', 'Stop total km': 'Teller KM (stopp)',
+                    'Innkjørt total Lav sats': 'Innkjørt totalt (lav)', 'Innkjørt total Høy sats': 'Innkjørt totalt (høy)',
+                    'Innkjørt total 0%': 'Innkjørt totalt (0%)', 'Til oppgjør Lav sats': 'Til oppgjør (lav)',
+                    'Til oppgjør Høy sats': 'Til oppgjør (høy)', 'Til oppgjør 0%': 'Til oppgjør (0%)',
+                    'Lønnsgrunnlag': 'Lønnsgrunnlag', 'Faktisk kont.': 'Faktisk kontant',
+                    'Tips (kont.)': 'Tips (kontant)', 'Tips (kred.)': 'Tips (kort)', 'Tips (kont.) 2': 'Tips (kontant) 2',
+                    'Drivstoff': 'Drivstoff', 'Drivstoff (liter)': 'Drivstoff (liter)',
+                    'Vask': 'Vask', 'Rekvisita': 'Rekvisita', 'Forskudd': 'Forskudd',
+                    'Netto 1': 'Netto 1', 'Netto 2': 'Netto 2',
+                    'Kasse ved start': 'Kasse (start)', 'Kasse tilført': 'Kasse tilført',
+                    'Kasse ved slutt': 'Kasse (slutt)', 'Kasse opptelling': 'Kasseopptelling',
+                    'Kasse differanse': 'Kassedifferanse', 'Kasse start dato': 'Kassedato (start)',
+                    'Kasse start tid': 'Kassetid (start)', 'Kasse stopp dato': 'Kassedato (stopp)',
+                    'Kasse stopp tid': 'Kassetid (stopp)', 'Effektiv timer': 'Effektive timer',
+                    'Effektiv minutter': 'Effektive minutter',
                 }
-            } catch (err) {
-                console.error('Error creating store:', err);
+            },
+            tr: {
+                title: 'Sürücü',
+                subtitle: 'Vardiya verilerini, km ve kazançları sürücüye göre analiz et',
+                uploadTitle: 'Excel Dosyası\nYükle',
+                uploadSub: '.xlsx ve .xls desteklenir — sürücü sütunu otomatik algılanır',
+                chooseFile: 'Dosya Seç',
+                dragDrop: 'Excel dosyasını buraya tıklayın veya sürükleyip bırakın',
+                filterBy: 'FİLTRE:',
+                allDrivers: 'Tüm Sürücüler',
+                sortBy: 'SIRALA:',
+                sortNone: 'Sırasız',
+                sortWages: 'Ücret ↓',
+                sortKms: 'KM ↓',
+                tableTitle: 'Vardiyalar',
+                tableSub: 'Sürücü başına toplamlarla tüm veriler',
+                loading: 'Veriler yükleniyor...',
+                cardsTitle: 'Sürücü Özeti',
+                cardsSub: 'Tabloyu filtrelemek için bir karta tıklayın',
+                statShifts: 'VARDİYA', statDrivers: 'SÜRÜCÜLER',
+                statWages: 'ÜCRET TABANI', statCash: 'NAKİT', statKm: 'TOPLAM KM',
+                cardShifts: 'VARDİYA', cardWages: 'ÜCRET', cardCash: 'NAKİT',
+                cardKm: 'KM', cardAvgWage: 'ORT/VARDİYA', cardAvgKm: 'ORT KM',
+                cardClickHint: 'Filtrelemek için tıklayın',
+                colCount: '#',
+                totalRow: 'TOPLAM',
+                records: 'vardiya',
+                noData: 'Geçerli veri yok',
+                errEmpty: 'Dosya boş veya veri içermiyor',
+                errRead: 'Dosya okunamadı',
+                errFailed: 'Dosya okuma hatası',
+                errRetry: "Tekrar denemek için Tamam'a tıklayın",
+                cols: {
+                    'Løyve': 'Taksi Lisansı', 'Reg. nr.': 'Plaka No.', 'Org. nr.': 'Vergi No.',
+                    'Sjåførnr.': 'Sürücü No.', 'Skiftnr.': 'Vardiya No.', 'Serienr.': 'Seri No.',
+                    'Km mellom skift': 'Vardiyalar Arası KM', 'Start dato': 'Başlangıç Tarihi',
+                    'Start tid': 'Başlangıç Saati', 'Stopp dato': 'Bitiş Tarihi', 'Stopp tid': 'Bitiş Saati',
+                    'Antall turer': 'Sefer', 'Km total': 'Toplam KM',
+                    'Km besatt': 'Yolculu KM', 'Km opptatt': 'Dolu KM',
+                    'Start total innkjørt': 'Sayaç Gelir (Baş.)', 'Stopp total innkjørt': 'Sayaç Gelir (Bit.)',
+                    'Start total MVA': 'Sayaç KDV (Baş.)', 'Stopp total MVA': 'Sayaç KDV (Bit.)',
+                    'Start total km': 'Sayaç KM (Baş.)', 'Stop total km': 'Sayaç KM (Bit.)',
+                    'Innkjørt total Lav sats': 'Fatura Toplam (Düşük)', 'Innkjørt total Høy sats': 'Fatura Toplam (Yüksek)',
+                    'Innkjørt total 0%': 'Fatura Toplam (%0)', 'Til oppgjør Lav sats': 'Hesaplaşma (Düşük)',
+                    'Til oppgjør Høy sats': 'Hesaplaşma (Yüksek)', 'Til oppgjør 0%': 'Hesaplaşma (%0)',
+                    'Lønnsgrunnlag': 'Ücret Tabanı', 'Faktisk kont.': 'Nakit Tahsilat',
+                    'Tips (kont.)': 'Bahşiş (Nakit)', 'Tips (kred.)': 'Bahşiş (Kart)', 'Tips (kont.) 2': 'Bahşiş (Nakit) 2',
+                    'Drivstoff': 'Yakıt', 'Drivstoff (liter)': 'Yakıt (Litre)',
+                    'Vask': 'Araç Yıkama', 'Rekvisita': 'Malzeme', 'Forskudd': 'Avans',
+                    'Netto 1': 'Net Nakit 1', 'Netto 2': 'Net Nakit 2',
+                    'Kasse ved start': 'Kasa (Baş.)', 'Kasse tilført': 'Kasaya Eklenen',
+                    'Kasse ved slutt': 'Kasa (Bit.)', 'Kasse opptelling': 'Kasa Sayımı',
+                    'Kasse differanse': 'Kasa Farkı', 'Kasse start dato': 'Kasa Tarihi (Baş.)',
+                    'Kasse start tid': 'Kasa Saati (Baş.)', 'Kasse stopp dato': 'Kasa Tarihi (Bit.)',
+                    'Kasse stopp tid': 'Kasa Saati (Bit.)', 'Effektiv timer': 'Etkin Saat',
+                    'Effektiv minutter': 'Etkin Dakika',
+                }
             }
         };
 
-        request.onsuccess = function(e) {
-            db = e.target.result;
-            console.log('Database opened successfully');
-            resolve();
-            loadRecentDocuments();
-        };
+        let currentLang = 'no';
+        function t(key) { return translations[currentLang][key] || translations['no'][key] || key; }
+        function colLabel(k) { return (translations[currentLang].cols || {})[k] || k; }
 
-        request.onerror = function() {
-            console.error('Failed to open database:', db.error);
-            reject(db.error || 'Unknown error');
-        };
-    });
-}
-
-// Initialize DB when DOM is ready - simplified, no duplicate handler calls
-document.addEventListener('DOMContentLoaded', async () => {
-    await openDatabase();
-});
-
-// ============ FILE UPLOAD ============
-document.getElementById('fileInput').addEventListener('change', handleFileUpload);
-
-// Drag and drop
-const dz = document.getElementById('dropZone');
-if (dz) {
-    dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--accent)'; });
-    dz.addEventListener('dragleave', () => { dz.style.borderColor = ''; });
-    dz.addEventListener('drop', e => {
-        e.preventDefault(); dz.style.borderColor = '';
-        const f = e.dataTransfer.files[0];
-        if (f) { const dt = new DataTransfer(); dt.items.add(f); document.getElementById('fileInput').files = dt.files; handleFileUpload({ target: { files: dt.files } }); }
-    });
-}
-
-function handleFileUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    // Hide both sections when upload starts - this is critical!
-    hideBothSections();
-    
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('resultsSection').style.display = 'none';
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        try {
-            const data = new Uint8Array(event.target.result);
-            const workbook = XLSX.read(data, { type: 'array', cellDates: true });
-            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-            rawData = XLSX.utils.sheet_to_json(firstSheet, { defval: '', raw: false });
-            if (rawData.length === 0) throw new Error(t('errEmpty'));
-            processHeaders();
-            detectDriverColumnIMPROVED();
-            processAllData();
-            saveDocument(file.name, rawData);
-        } catch (err) {
-            log('❌ ' + err.message);
-            showError(err.message);
-            resetView();
-        }
-    };
-    reader.onerror = () => { showError(t('errRead')); resetView(); };
-    reader.readAsArrayBuffer(file);
-}
-
-function saveDocument(name, data) {
-    if (!db) {
-        console.warn('Database not initialized yet, saving anyway');
-        setTimeout(() => saveDocument(name, data), 100);
-        return;
-    }
-
-    try {
-        // Create a copy of the data that can be serialized
-        const docData = JSON.parse(JSON.stringify(data));
-        
-        const tx = db.transaction("documents", "readwrite");
-        const store = tx.objectStore("documents");
-
-        store.add({
-            name: name,
-            date: new Date(),
-            rows: data.length,
-            data: docData
-        });
-    } catch (err) {
-        console.error('Error saving document:', err);
-    }
-}
-
-// ============ PROCESS HEADERS ============
-function processHeaders() {
-    const originalKeys = Object.keys(rawData[0]);
-    const cumulativeColumns = [
-        'start total innkjørt','stopp total innkjørt','start total mva','stopp total mva',
-        'start total km','stopp total km','stop total km',
-        'kasse ved start','kasse ved slutt','kasse opptelling','kasse tilført','kasse differanse',
-        'netto 1','netto 2',
-    ];
-    const cashColumns = ['faktisk kont.'];
-    headers = originalKeys.map(key => {
-        const kl = key.toLowerCase().trim();
-        if (cumulativeColumns.includes(kl)) return key + '|cumulative';
-        if (cashColumns.includes(kl)) return key + '|cash';
-        if (kl === 'lønnsgrunnlag') return key + '|wages';
-        if (['km total','km besatt','km opptatt','km mellom skift'].includes(kl)) return key + '|kilometers';
-        return key + '|normal';
-    });
-}
-
-function getKey(h) { return h ? h.split('|')[0] : ''; }
-function getType(h) { return h ? (h.split('|')[1] || 'normal') : 'normal'; }
-
-// ============ DRIVER DETECTION ============
-function detectDriverColumnIMPROVED() {
-    let detectedIndex = -1;
-    const driverPriority = ['sjåførnr','sjåfør nr','driver nr','sjåfør'];
-    for (const pattern of driverPriority) {
-        for (let i = 0; i < headers.length; i++) {
-            if (getKey(headers[i]).toLowerCase().includes(pattern)) { detectedIndex = i; break; }
-        }
-        if (detectedIndex !== -1) break;
-    }
-    if (detectedIndex === -1) {
-        const potentials = ['driver','sjåfør','customer id','kundenummer','id','nummer','kodenr','shift number'];
-        for (let i = 0; i < headers.length; i++) {
-            if (potentials.some(p => getKey(headers[i]).toLowerCase().includes(p))) { detectedIndex = i; break; }
-        }
-    }
-    if (detectedIndex === -1) {
-        for (let i = 0; i < headers.length; i++) {
-            const key = getKey(headers[i]);
-            let numericCount = 0;
-            for (let j = 0; j < Math.min(5, rawData.length); j++) {
-                const v = rawData[j][key];
-                if (v && !isNaN(v) && Number.isInteger(Number(v)) && Number(v) > 1000) numericCount++;
-            }
-            if (numericCount >= 2) { detectedIndex = i; break; }
-        }
-    }
-    if (detectedIndex === -1) {
-        for (let i = 0; i < headers.length; i++) {
-            const type = getType(headers[i]);
-            if (type !== 'financial' && type !== 'kilometers') { detectedIndex = i; break; }
-        }
-    }
-    detectedDriverColumnIndex = detectedIndex >= 0 ? detectedIndex : 0;
-}
-
-// ============ PROCESS ALL DATA ============
-function processAllData() {
-    driverData = {};
-    const driverKey = getKey(headers[detectedDriverColumnIndex]);
-    rawData.forEach(row => {
-        const original = String(row[driverKey] || '').trim();
-        const mapped = mapDriverName(original);
-        const clean = normalizeString(mapped);
-
-        row.__driverName = mapped;
-        if (!driverData[clean]) driverData[clean] = [];
-        driverData[clean].push(row);
-    });
-    const allDrivers = Object.keys(driverData).sort();
-    populateFilterDropdown(allDrivers);
-    calculateGlobalStats(allDrivers);
-    createDriverSummaryCards(allDrivers);
-    renderMainTable();
-    document.getElementById('loading').style.display = 'none';
-    hideUploadAndShowResults(); // Hides both sections and shows results
-    document.getElementById('dataTable').style.display = '';
-    const pill = document.getElementById('driverCountPill');
-    if (pill) pill.textContent = allDrivers.length + ' ' + t('statDrivers').toLowerCase();
-}
-
-function normalizeString(str) {
-    if (!str) return '';
-    return str.toString().trim().toLowerCase().replace(/[\s]+/g,' ').replace(/[^a-z0-9]/g,'');
-}
-
-function populateFilterDropdown(drivers) {
-    const sel = document.getElementById('driverFilter');
-    // clear existing driver options
-    while (sel.options.length > 1) sel.remove(1);
-    drivers.forEach(d => {
-        const o = document.createElement('option');
-        o.value = d; o.textContent = d.toUpperCase();
-        sel.appendChild(o);
-    });
-}
-
-function parseNumber(val) {
-    if (typeof val === 'number') return Number.isFinite(val) ? val : 0;
-    if (!val || typeof val !== 'string') return 0;
-    const n = parseFloat(val);
-    return Number.isFinite(n) ? n : 0;
-}
-
-function openSavedDocument(id) {
-    if (!db) return;
-
-    try {
-        // HIDE SECTIONS BEFORE LOADING - This is the key fix!
-        hideBothSections();
-                
-        const tx = db.transaction("documents", "readonly");
-        const store = tx.objectStore("documents");
-        const request = store.get(id);
-
-        request.onsuccess = function() {
-            const doc = request.result;
-            if (!doc) return;
-
-            // Reset state before loading
-            rawData = [];
-            headers = [];
-            driverData = {};
-            detectedDriverColumnIndex = -1;
-            
-            // Load document data
-            rawData = JSON.parse(JSON.stringify(doc.data));
-            processHeaders();
-            detectDriverColumnIMPROVED();
-            processAllData();
-        };
-    } catch (err) {
-        console.error('Error opening saved document:', err);
-    }
-}
-
-function loadRecentDocuments() {
-    if (!db) {
-        console.warn('Database not ready yet');
-        setTimeout(loadRecentDocuments, 100);
-        return;
-    }
-
-    try {
-        const tx = db.transaction("documents", "readonly");
-        const store = tx.objectStore("documents");
-        const request = store.getAll();
-
-        request.onsuccess = function() {
-            const docs = request.result
-                .sort((a,b) => new Date(b.date) - new Date(a.date))
-                .slice(0,10);
-
-            if (docs.length === 0) return;
-
-            const container = document.getElementById("recentList");
-            container.innerHTML = "";
-
-            docs.forEach(doc => {
-                const div = document.createElement("div");
-                div.className = "recent-item";
-                div.dataset.docId = doc.id; // Store ID as data attribute
-                div.innerHTML = `
-                    <strong>${doc.name}</strong><br>
-                    ${doc.rows} rows<br>
-                    ${new Date(doc.date).toLocaleString()}
-                `;
-                container.appendChild(div);
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('langNO').className = 'lang-btn' + (lang === 'no' ? ' active' : '');
+            document.getElementById('langTR').className = 'lang-btn' + (lang === 'tr' ? ' active' : '');
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = t(el.getAttribute('data-i18n'));
             });
-            
-            // Set up event handler after all items are created
-            setupRecentItemsClickHandler();
+            const allOpt = document.querySelector('#driverFilter option[value=""]');
+            if (allOpt) allOpt.textContent = t('allDrivers');
+            if (rawData.length > 0) {
+                const allDrivers = Object.keys(driverData).sort();
+                calculateGlobalStats(allDrivers);
+                createDriverSummaryCards(allDrivers);
+                renderMainTable();
+            }
+        }
+
+        // ============ GLOBALS ============
+        let rawData = [], headers = [], driverData = {}, detectedDriverColumnIndex = -1;
+
+        function log(msg) {
+            const c = document.getElementById('debugConsole');
+            if (c && !c.style.display.includes('none')) { c.textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`; c.scrollTop = c.scrollHeight; }
+        }
+        
+        // Driver ID -> Name mapping
+        const DRIVER_NAME_MAP = {
+            "440004": "Erkan",
+            "444735": "Ersan"
         };
-    } catch (err) {
-        console.error('Error loading recent documents:', err);
-    }
-}
 
-// Event delegation for recent items - fixed to only set once
-let recentItemsHandlerSetup = false;
-function setupRecentItemsClickHandler() {
-    const recentList = document.getElementById("recentList");
-    if (!recentList || recentItemsHandlerSetup) return; // Already set up or doesn't exist
-    
-    recentItemsHandlerSetup = true; // Mark as done so we don't add duplicate listeners
-    recentList.addEventListener('click', (e) => {
-        const item = e.target.closest('.recent-item');
-        if (item && item.dataset.docId) {
-            openSavedDocument(item.dataset.docId);
+        function mapDriverName(value) {
+            const str = String(value).trim();
+            return DRIVER_NAME_MAP[str] || str;
         }
-    });
-}
 
-function fmt(n) { return n.toLocaleString('nb-NO', { minimumFractionDigits: 2 }); }
+        // ============================
+        // INDEXEDDB DOCUMENT STORAGE
+        // ============================
 
-// ============ STATS STRIP ============
-function calculateGlobalStats(drivers) {
-    let totalWages = 0, totalCash = 0, totalKMS = 0;
-    headers.forEach(h => {
-        const type = getType(h), key = getKey(h);
-        if (type === 'wages') totalWages += rawData.reduce((a, r) => a + parseNumber(r[key]), 0);
-        if (type === 'cash')  totalCash  += rawData.reduce((a, r) => a + parseNumber(r[key]), 0);
-        if (type === 'kilometers') totalKMS += rawData.reduce((a, r) => a + parseNumber(r[key]), 0);
-    });
-    document.getElementById('statsGrid').innerHTML = `
-        <div class="stat-tile">
-            <div class="stat-tile-label">${t('statShifts')}</div>
-            <div class="stat-tile-value">${rawData.length}</div>
-        </div>
-        <div class="stat-tile">
-            <div class="stat-tile-label">${t('statDrivers')}</div>
-            <div class="stat-tile-value">${drivers.length}</div>
-        </div>
-        <div class="stat-tile">
-            <div class="stat-tile-label">${t('statWages')}</div>
-            <div class="stat-tile-value accent">kr ${fmt(totalWages)}</div>
-        </div>
-        <div class="stat-tile">
-            <div class="stat-tile-label">${t('statCash')}</div>
-            <div class="stat-tile-value">kr ${fmt(totalCash)}</div>
-        </div>
-        <div class="stat-tile">
-            <div class="stat-tile-label">${t('statKm')}</div>
-            <div class="stat-tile-value">${Math.round(totalKMS).toLocaleString('nb-NO')} km</div>
-        </div>
-    `;
-}
+        let db;
 
-// ============ DRIVER CARDS ============
-function createDriverSummaryCards(drivers) {
-    let html = '';
-    drivers.forEach((driver, idx) => {
-        const rows = driverData[driver];
-        if (!rows || rows.length === 0) return;
-        let wages = 0, cash = 0, kms = 0;
-        headers.forEach(h => {
-            const type = getType(h), key = getKey(h);
-            const sum = rows.reduce((a, r) => a + parseNumber(r[key]), 0);
-            if (type === 'wages') wages += sum;
-            if (type === 'cash')  cash  += sum;
-            if (type === 'kilometers') kms += sum;
-        });
-        const shifts = rows.length;
-        const initials = driver.slice(0,3).toUpperCase();
-        html += `
-            <div class="driver-card" onclick="filterByDriver('${escapeString(driver)}')" style="animation-delay:${idx * 0.05}s">
-                <div class="driver-card-header">
-                    <div class="driver-avatar">${initials}</div>
-                    <div class="driver-name-block">
-                        <div class="driver-name">${rows[0].__driverName.toUpperCase()}</div>
-                        <div class="driver-hint">${t('cardClickHint')}</div>
-                    </div>
+        function initDB() {
+            const request = indexedDB.open("TaxiAnalyzerDB", 1);
+
+            request.onupgradeneeded = function(e) {
+                db = e.target.result;
+
+                if (!db.objectStoreNames.contains("documents")) {
+                    const store = db.createObjectStore("documents", {
+                        keyPath: "id",
+                        autoIncrement: true
+                    });
+
+                    store.createIndex("date", "date");
+                }
+            };
+
+            request.onsuccess = function(e) {
+                db = e.target.result;
+                loadRecentDocuments();
+            };
+        }
+
+        initDB();
+
+        // ============ FILE UPLOAD ============
+        document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+
+        // Drag and drop
+        const dz = document.getElementById('dropZone');
+        if (dz) {
+            dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--accent)'; });
+            dz.addEventListener('dragleave', () => { dz.style.borderColor = ''; });
+            dz.addEventListener('drop', e => {
+                e.preventDefault(); dz.style.borderColor = '';
+                const f = e.dataTransfer.files[0];
+                if (f) { const dt = new DataTransfer(); dt.items.add(f); document.getElementById('fileInput').files = dt.files; handleFileUpload({ target: { files: dt.files } }); }
+            });
+        }
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = new Uint8Array(event.target.result);
+                    const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    rawData = XLSX.utils.sheet_to_json(firstSheet, { defval: '', raw: false });
+                    if (rawData.length === 0) throw new Error(t('errEmpty'));
+                    processHeaders();
+                    detectDriverColumnIMPROVED();
+                    processAllData();
+                    saveDocument(file.name, rawData);
+                } catch (err) {
+                    log('❌ ' + err.message);
+                    showError(err.message);
+                    resetView();
+                }
+            };
+            reader.onerror = () => { showError(t('errRead')); resetView(); };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function saveDocument(name, data) {
+
+            if (!db) return;
+
+            const tx = db.transaction("documents", "readwrite");
+            const store = tx.objectStore("documents");
+
+            store.add({
+                name: name,
+                date: new Date(),
+                rows: data.length,
+                data: data
+            });
+        }
+
+        // ============ PROCESS HEADERS ============
+        function processHeaders() {
+            const originalKeys = Object.keys(rawData[0]);
+            const cumulativeColumns = [
+                'start total innkjørt','stopp total innkjørt','start total mva','stopp total mva',
+                'start total km','stopp total km','stop total km',
+                'kasse ved start','kasse ved slutt','kasse opptelling','kasse tilført','kasse differanse',
+                'netto 1','netto 2',
+            ];
+            const cashColumns = ['faktisk kont.'];
+            headers = originalKeys.map(key => {
+                const kl = key.toLowerCase().trim();
+                if (cumulativeColumns.includes(kl)) return key + '|cumulative';
+                if (cashColumns.includes(kl)) return key + '|cash';
+                if (kl === 'lønnsgrunnlag') return key + '|wages';
+                if (['km total','km besatt','km opptatt','km mellom skift'].includes(kl)) return key + '|kilometers';
+                return key + '|normal';
+            });
+        }
+
+        function getKey(h) { return h ? h.split('|')[0] : ''; }
+        function getType(h) { return h ? (h.split('|')[1] || 'normal') : 'normal'; }
+
+        // ============ DRIVER DETECTION ============
+        function detectDriverColumnIMPROVED() {
+            let detectedIndex = -1;
+            const driverPriority = ['sjåførnr','sjåfør nr','driver nr','sjåfør'];
+            for (const pattern of driverPriority) {
+                for (let i = 0; i < headers.length; i++) {
+                    if (getKey(headers[i]).toLowerCase().includes(pattern)) { detectedIndex = i; break; }
+                }
+                if (detectedIndex !== -1) break;
+            }
+            if (detectedIndex === -1) {
+                const potentials = ['driver','sjåfør','customer id','kundenummer','id','nummer','kodenr','shift number'];
+                for (let i = 0; i < headers.length; i++) {
+                    if (potentials.some(p => getKey(headers[i]).toLowerCase().includes(p))) { detectedIndex = i; break; }
+                }
+            }
+            if (detectedIndex === -1) {
+                for (let i = 0; i < headers.length; i++) {
+                    const key = getKey(headers[i]);
+                    let numericCount = 0;
+                    for (let j = 0; j < Math.min(5, rawData.length); j++) {
+                        const v = rawData[j][key];
+                        if (v && !isNaN(v) && Number.isInteger(Number(v)) && Number(v) > 1000) numericCount++;
+                    }
+                    if (numericCount >= 2) { detectedIndex = i; break; }
+                }
+            }
+            if (detectedIndex === -1) {
+                for (let i = 0; i < headers.length; i++) {
+                    const type = getType(headers[i]);
+                    if (type !== 'financial' && type !== 'kilometers') { detectedIndex = i; break; }
+                }
+            }
+            detectedDriverColumnIndex = detectedIndex >= 0 ? detectedIndex : 0;
+        }
+
+        // ============ PROCESS ALL DATA ============
+        function processAllData() {
+            driverData = {};
+            const driverKey = getKey(headers[detectedDriverColumnIndex]);
+            rawData.forEach(row => {
+                const original = String(row[driverKey] || '').trim();
+                const mapped = mapDriverName(original);
+                const clean = normalizeString(mapped);
+
+                row.__driverName = mapped;
+                if (!driverData[clean]) driverData[clean] = [];
+                driverData[clean].push(row);
+            });
+            const allDrivers = Object.keys(driverData).sort();
+            populateFilterDropdown(allDrivers);
+            calculateGlobalStats(allDrivers);
+            createDriverSummaryCards(allDrivers);
+            renderMainTable();
+            document.getElementById('loading').style.display = 'none';
+            const rs = document.getElementById('resultsSection');
+            rs.style.display = 'block';
+            rs.classList.add('visible');
+            document.getElementById('dataTable').style.display = '';
+            const pill = document.getElementById('driverCountPill');
+            if (pill) pill.textContent = allDrivers.length + ' ' + t('statDrivers').toLowerCase();
+        }
+
+        function normalizeString(str) {
+            if (!str) return '';
+            return str.toString().trim().toLowerCase().replace(/[\s]+/g,' ').replace(/[^a-z0-9]/g,'');
+        }
+
+        function populateFilterDropdown(drivers) {
+            const sel = document.getElementById('driverFilter');
+            // clear existing driver options
+            while (sel.options.length > 1) sel.remove(1);
+            drivers.forEach(d => {
+                const o = document.createElement('option');
+                o.value = d; o.textContent = d.toUpperCase();
+                sel.appendChild(o);
+            });
+        }
+
+        function parseNumber(val) {
+            if (typeof val === 'number') return Number.isFinite(val) ? val : 0;
+            if (!val || typeof val !== 'string') return 0;
+            const n = parseFloat(val);
+            return Number.isFinite(n) ? n : 0;
+        }
+
+        function openSavedDocument(id) {
+
+            const tx = db.transaction("documents", "readonly");
+            const store = tx.objectStore("documents");
+
+            const request = store.get(id);
+
+            request.onsuccess = function() {
+
+                const doc = request.result;
+
+                if (!doc) return;
+
+                rawData = doc.data;
+
+                processHeaders();
+                detectDriverColumnIMPROVED();
+                processAllData();
+            };
+        }
+
+        function loadRecentDocuments() {
+
+            if (!db) return;
+
+            const tx = db.transaction("documents", "readonly");
+            const store = tx.objectStore("documents");
+
+            const request = store.getAll();
+
+            request.onsuccess = function() {
+
+                const docs = request.result
+                    .sort((a,b) => new Date(b.date) - new Date(a.date))
+                    .slice(0,10);
+
+                const container = document.getElementById("recentList");
+
+                container.innerHTML = "";
+
+                docs.forEach(doc => {
+
+                    const div = document.createElement("div");
+                    div.className = "recent-item";
+
+                    div.innerHTML = `
+                        <strong>${doc.name}</strong><br>
+                        ${doc.rows} rows<br>
+                        ${new Date(doc.date).toLocaleString()}
+                    `;
+
+                    div.onclick = () => openSavedDocument(doc.id);
+
+                    container.appendChild(div);
+                });
+            };
+        }
+
+        function fmt(n) { return n.toLocaleString('nb-NO', { minimumFractionDigits: 2 }); }
+
+        // ============ STATS STRIP ============
+        function calculateGlobalStats(drivers) {
+            let totalWages = 0, totalCash = 0, totalKMS = 0;
+            headers.forEach(h => {
+                const type = getType(h), key = getKey(h);
+                if (type === 'wages') totalWages += rawData.reduce((a, r) => a + parseNumber(r[key]), 0);
+                if (type === 'cash')  totalCash  += rawData.reduce((a, r) => a + parseNumber(r[key]), 0);
+                if (type === 'kilometers') totalKMS += rawData.reduce((a, r) => a + parseNumber(r[key]), 0);
+            });
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-tile">
+                    <div class="stat-tile-label">${t('statShifts')}</div>
+                    <div class="stat-tile-value">${rawData.length}</div>
                 </div>
-                <div class="card-metrics">
-                    <div class="metric">
-                        <div class="metric-label">${t('cardShifts')}</div>
-                        <div class="metric-val">${shifts}</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">${t('cardWages')}</div>
-                        <div class="metric-val hi">kr ${fmt(wages)}</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">${t('cardCash')}</div>
-                        <div class="metric-val green">kr ${fmt(cash)}</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">${t('cardKm')}</div>
-                        <div class="metric-val">${Math.round(kms)}</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">${t('cardAvgWage')}</div>
-                        <div class="metric-val">kr ${fmt(wages/shifts)}</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">${t('cardAvgKm')}</div>
-                        <div class="metric-val">${Math.round(kms/shifts)}</div>
-                    </div>
+                <div class="stat-tile">
+                    <div class="stat-tile-label">${t('statDrivers')}</div>
+                    <div class="stat-tile-value">${drivers.length}</div>
                 </div>
-            </div>`;
-    });
-    document.getElementById('summaryGrid').innerHTML = html;
-}
+                <div class="stat-tile">
+                    <div class="stat-tile-label">${t('statWages')}</div>
+                    <div class="stat-tile-value accent">kr ${fmt(totalWages)}</div>
+                </div>
+                <div class="stat-tile">
+                    <div class="stat-tile-label">${t('statCash')}</div>
+                    <div class="stat-tile-value">kr ${fmt(totalCash)}</div>
+                </div>
+                <div class="stat-tile">
+                    <div class="stat-tile-label">${t('statKm')}</div>
+                    <div class="stat-tile-value">${Math.round(totalKMS).toLocaleString('nb-NO')} km</div>
+                </div>
+            `;
+        }
 
-// ============ RENDER TABLE ============
-function renderMainTable() {
-    const theadEl = document.getElementById('tableHead');
-    const tbodyEl = document.getElementById('tableBody');
-    let tableHeaderHTML = '<thead><tr>';
-    headers.forEach(header => {
-        tableHeaderHTML += `<th>${colLabel(getKey(header))}</th>`;
-    });
-    tableHeaderHTML += `<th>${t('colCount')}</th></tr></thead>`;
-    theadEl.innerHTML = tableHeaderHTML;
+        // ============ DRIVER CARDS ============
+        function createDriverSummaryCards(drivers) {
+            let html = '';
+            drivers.forEach((driver, idx) => {
+                const rows = driverData[driver];
+                if (!rows || rows.length === 0) return;
+                let wages = 0, cash = 0, kms = 0;
+                headers.forEach(h => {
+                    const type = getType(h), key = getKey(h);
+                    const sum = rows.reduce((a, r) => a + parseNumber(r[key]), 0);
+                    if (type === 'wages') wages += sum;
+                    if (type === 'cash')  cash  += sum;
+                    if (type === 'kilometers') kms += sum;
+                });
+                const shifts = rows.length;
+                const initials = driver.slice(0,3).toUpperCase();
+                html += `
+                    <div class="driver-card" onclick="filterByDriver('${escapeString(driver)}')" style="animation-delay:${idx * 0.05}s">
+                        <div class="driver-card-header">
+                            <div class="driver-avatar">${initials}</div>
+                            <div class="driver-name-block">
+                                <div class="driver-name">${rows[0].__driverName.toUpperCase()}</div>
+                                <div class="driver-hint">${t('cardClickHint')}</div>
+                            </div>
+                        </div>
+                        <div class="card-metrics">
+                            <div class="metric">
+                                <div class="metric-label">${t('cardShifts')}</div>
+                                <div class="metric-val">${shifts}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">${t('cardWages')}</div>
+                                <div class="metric-val hi">kr ${fmt(wages)}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">${t('cardCash')}</div>
+                                <div class="metric-val green">kr ${fmt(cash)}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">${t('cardKm')}</div>
+                                <div class="metric-val">${Math.round(kms)}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">${t('cardAvgWage')}</div>
+                                <div class="metric-val">kr ${fmt(wages/shifts)}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">${t('cardAvgKm')}</div>
+                                <div class="metric-val">${Math.round(kms/shifts)}</div>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            document.getElementById('summaryGrid').innerHTML = html;
+        }
 
-    const driverColumnIndex = detectedDriverColumnIndex >= 0 ? detectedDriverColumnIndex : 0;
-    const driverColumnHeader = headers[driverColumnIndex];
-    const sortedRows = [...rawData].sort((a, b) => {
-        const dk = getKey(driverColumnHeader);
-        return String(a[dk]||'').toLowerCase().localeCompare(String(b[dk]||'').toLowerCase());
-    });
+        // ============ RENDER TABLE ============
+        function renderMainTable() {
+            const theadEl = document.getElementById('tableHead');
+            const tbodyEl = document.getElementById('tableBody');
+            let tableHeaderHTML = '<thead><tr>';
+            headers.forEach(header => {
+                tableHeaderHTML += `<th>${colLabel(getKey(header))}</th>`;
+            });
+            tableHeaderHTML += `<th>${t('colCount')}</th></tr></thead>`;
+            theadEl.innerHTML = tableHeaderHTML;
 
-    let bodyHTML = '<tbody>';
-    let currentDriver = null, recordCount = 0;
-    sortedRows.forEach(row => {
-        const cellValue = row.__driverName || row[getKey(driverColumnHeader)] || '';
-        const cleanDriver = normalizeString(String(cellValue));
-        if (cleanDriver !== currentDriver) {
+            const driverColumnIndex = detectedDriverColumnIndex >= 0 ? detectedDriverColumnIndex : 0;
+            const driverColumnHeader = headers[driverColumnIndex];
+            const sortedRows = [...rawData].sort((a, b) => {
+                const dk = getKey(driverColumnHeader);
+                return String(a[dk]||'').toLowerCase().localeCompare(String(b[dk]||'').toLowerCase());
+            });
+
+            let bodyHTML = '<tbody>';
+            let currentDriver = null, recordCount = 0;
+            sortedRows.forEach(row => {
+                const cellValue = row.__driverName || row[getKey(driverColumnHeader)] || '';
+                const cleanDriver = normalizeString(String(cellValue));
+                if (cleanDriver !== currentDriver) {
+                    if (currentDriver && recordCount > 0) bodyHTML += getDriverTotalRow(currentDriver, recordCount);
+                    currentDriver = cleanDriver; recordCount = 1;
+                } else { recordCount++; }
+                bodyHTML += formatDataRow(row, recordCount, `<span class="driver-highlight">${String(cellValue).toUpperCase()}</span>`);
+            });
             if (currentDriver && recordCount > 0) bodyHTML += getDriverTotalRow(currentDriver, recordCount);
-            currentDriver = cleanDriver; recordCount = 1;
-        } else { recordCount++; }
-        bodyHTML += formatDataRow(row, recordCount, `<span class="driver-highlight">${String(cellValue).toUpperCase()}</span>`);
-    });
-    if (currentDriver && recordCount > 0) bodyHTML += getDriverTotalRow(currentDriver, recordCount);
-    bodyHTML += '</tbody>';
-    tbodyEl.innerHTML = bodyHTML;
-}
-
-function formatDataRow(row, recordCount, highlightedDriverCell) {
-    let cells = headers.map((h, index) => {
-        if (!h) return '';
-        const key = getKey(h), typeInfo = getType(h);
-        if (index === detectedDriverColumnIndex) return '__DRIVER__';
-        const value = row[key];
-        if (typeInfo === 'wages' || typeInfo === 'cash') {
-            const n = parseNumber(value);
-            return n !== 0 ? `kr ${n.toLocaleString('nb-NO', {minimumFractionDigits:2})}` : '';
+            bodyHTML += '</tbody>';
+            tbodyEl.innerHTML = bodyHTML;
         }
-        if (typeInfo === 'kilometers') { const n = parseNumber(value); return n !== 0 ? `${Math.round(n)} km` : ''; }
-        return String(value !== undefined && value !== null ? value : '');
-    });
-    cells[detectedDriverColumnIndex] = highlightedDriverCell;
-    cells.push(recordCount.toString());
-    return '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
-}
 
-function getDriverTotalRow(driver, count) {
-    const rows = (driverData[driver] || []).filter(r => r && Object.keys(r).length > 0);
-    if (rows.length === 0) return `<tr class="total-row"><td colspan="${headers.length + 1}" style="text-align:center;padding:12px;color:var(--text-dim);">⚠ ${t('noData')}</td></tr>`;
-
-    let cells = headers.map(h => {
-        const type = getType(h), key = getKey(h);
-        if (type === 'cumulative') return '—';
-        try {
-            const sum = rows.reduce((a, r) => a + parseNumber(r[key]||0), 0);
-            if (type === 'wages' || type === 'cash') return `kr ${sum.toLocaleString('nb-NO',{minimumFractionDigits:2})}`;
-            if (type === 'kilometers') return `${Math.round(sum)} km`;
-            return '—';
-        } catch { return ''; }
-    });
-
-    return `<tr class="total-row"><td colspan="${headers.length + 1}" style="padding:10px 16px;text-align:right;font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.06em;color:var(--text-muted);">
-        ${t('totalRow')} · ${count} ${t('records')} &nbsp;|&nbsp;
-        ${cells.filter(c => c && c !== '—').map(c => `<span style="color:var(--accent)">${c}</span>`).join(' &nbsp;·&nbsp; ')}
-    </td></tr>`;
-}
-
-// ============ FILTER ============
-function filterByDriver(driverName) {
-    const searchValue = driverName.toLowerCase();
-    const driverKey = getKey(headers[detectedDriverColumnIndex >= 0 ? detectedDriverColumnIndex : 0]);
-    const sortedRows = [...rawData].sort((a, b) =>
-        String(a[driverKey]||'').toLowerCase().localeCompare(String(b[driverKey]||'').toLowerCase())
-    );
-    let html = '<tbody>';
-    let currentDriver = null, recordCount = 0;
-    sortedRows.forEach(row => {
-        const cellValue = row[driverKey] || '';
-        if (normalizeString(String(cellValue)).includes(searchValue)) {
-            const cleanDriver = normalizeString(cellValue);
-            if (cleanDriver !== currentDriver) {
-                if (currentDriver && recordCount > 0) html += getDriverTotalRow(currentDriver, recordCount);
-                currentDriver = cleanDriver; recordCount = 1;
-            } else { recordCount++; }
-            html += formatDataRow(row, recordCount, `<span class="driver-highlight">${String(cellValue).toUpperCase()}</span>`);
+        function formatDataRow(row, recordCount, highlightedDriverCell) {
+            let cells = headers.map((h, index) => {
+                if (!h) return '';
+                const key = getKey(h), typeInfo = getType(h);
+                if (index === detectedDriverColumnIndex) return '__DRIVER__';
+                const value = row[key];
+                if (typeInfo === 'wages' || typeInfo === 'cash') {
+                    const n = parseNumber(value);
+                    return n !== 0 ? `kr ${n.toLocaleString('nb-NO', {minimumFractionDigits:2})}` : '';
+                }
+                if (typeInfo === 'kilometers') { const n = parseNumber(value); return n !== 0 ? `${Math.round(n)} km` : ''; }
+                return String(value !== undefined && value !== null ? value : '');
+            });
+            cells[detectedDriverColumnIndex] = highlightedDriverCell;
+            cells.push(recordCount.toString());
+            return '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
         }
-    });
-    if (currentDriver && recordCount > 0) html += getDriverTotalRow(currentDriver, recordCount);
-    html += '</tbody>';
-    document.getElementById('tableBody').innerHTML = html;
-}
 
-// ============ UI STATE MANAGEMENT ============
-function hideBothSections() {
-    // Simple and reliable - just hide both sections immediately
-    const uploadSection = document.getElementById('uploadSection');
-    const recentDocsSection = document.getElementById('recentDocsSection');
-    
-    if (uploadSection) uploadSection.style.display = 'none';
-    if (recentDocsSection) recentDocsSection.style.display = 'none';
-}
+        function getDriverTotalRow(driver, count) {
+            const rows = (driverData[driver] || []).filter(r => r && Object.keys(r).length > 0);
+            if (rows.length === 0) return `<tr class="total-row"><td colspan="${headers.length + 1}" style="text-align:center;padding:12px;color:var(--text-dim);">⚠ ${t('noData')}</td></tr>`;
 
+            let cells = headers.map(h => {
+                const type = getType(h), key = getKey(h);
+                if (type === 'cumulative') return '—';
+                try {
+                    const sum = rows.reduce((a, r) => a + parseNumber(r[key]||0), 0);
+                    if (type === 'wages' || type === 'cash') return `kr ${sum.toLocaleString('nb-NO',{minimumFractionDigits:2})}`;
+                    if (type === 'kilometers') return `${Math.round(sum)} km`;
+                    return '—';
+                } catch { return ''; }
+            });
 
+            return `<tr class="total-row"><td colspan="${headers.length + 1}" style="padding:10px 16px;text-align:right;font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.06em;color:var(--text-muted);">
+                ${t('totalRow')} · ${count} ${t('records')} &nbsp;|&nbsp;
+                ${cells.filter(c => c && c !== '—').map(c => `<span style="color:var(--accent)">${c}</span>`).join(' &nbsp;·&nbsp; ')}
+            </td></tr>`;
+        }
 
-function showUploadAndRecentDocs() {
-    const uploadSection = document.getElementById('uploadSection');
-    const recentDocsSection = document.getElementById('recentDocsSection');
-    
-    if (uploadSection) uploadSection.style.display = 'flex';
-    if (recentDocsSection) recentDocsSection.style.display = 'block';
-}
+        // ============ FILTER ============
+        function filterByDriver(driverName) {
+            const searchValue = driverName.toLowerCase();
+            const driverKey = getKey(headers[detectedDriverColumnIndex >= 0 ? detectedDriverColumnIndex : 0]);
+            const sortedRows = [...rawData].sort((a, b) =>
+                String(a[driverKey]||'').toLowerCase().localeCompare(String(b[driverKey]||'').toLowerCase())
+            );
+            let html = '<tbody>';
+            let currentDriver = null, recordCount = 0;
+            sortedRows.forEach(row => {
+                const cellValue = row[driverKey] || '';
+                if (normalizeString(String(cellValue)).includes(searchValue)) {
+                    const cleanDriver = normalizeString(cellValue);
+                    if (cleanDriver !== currentDriver) {
+                        if (currentDriver && recordCount > 0) html += getDriverTotalRow(currentDriver, recordCount);
+                        currentDriver = cleanDriver; recordCount = 1;
+                    } else { recordCount++; }
+                    html += formatDataRow(row, recordCount, `<span class="driver-highlight">${String(cellValue).toUpperCase()}</span>`);
+                }
+            });
+            if (currentDriver && recordCount > 0) html += getDriverTotalRow(currentDriver, recordCount);
+            html += '</tbody>';
+            document.getElementById('tableBody').innerHTML = html;
+        }
 
-// ============ CONTROLS ============
-const sortSelect = document.getElementById('sortSelect');
-if (sortSelect) sortSelect.addEventListener('change', renderMainTable);
+        // ============ CONTROLS ============
+        document.getElementById('sortSelect').addEventListener('change', renderMainTable);
+        document.getElementById('driverFilter').addEventListener('change', function(e) {
+            if (!e.target.value) renderMainTable(); else filterByDriver(e.target.value);
+        });
 
-const driverFilter = document.getElementById('driverFilter');
-if (driverFilter) {
-    driverFilter.addEventListener('change', function(e) {
-        if (!e.target.value) renderMainTable(); else filterByDriver(e.target.value);
-    });
-}
+        // ============ SERVICE PHONE ===========
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js");
+        }
 
-// Hide recent docs when upload is shown
-const uploadSection = document.getElementById('uploadSection');
-const recentDocsSection = document.getElementById('recentDocsSection');
-if (uploadSection && recentDocsSection) {
-    uploadSection.addEventListener('click', () => {
-        recentDocsSection.style.display = 'none';
-    });
-}
+        // ============ ERRORS / UTILS ============
+        function showError(message) {
+            document.getElementById('errorContainer').innerHTML = `
+                <div class="error-box"><h3>❌ ${t('errFailed')}</h3><p>${message}</p><p style="margin-top:6px;opacity:0.7;font-size:0.82rem;">${t('errRetry')}</p></div>`;
+        }
 
-// ============ SERVICE WORKER ===========
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/sw.js");
-}
+        function resetView() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('uploadSection').style.display = 'flex';
+        }
 
-// ============ ERRORS / UTILS ============
-function showError(message) {
-    document.getElementById('errorContainer').innerHTML = `
-        <div class="error-box"><h3>❌ ${t('errFailed')}</h3><p>${message}</p><p style="margin-top:6px;opacity:0.7;font-size:0.82rem;">${t('errRetry')}</p></div>`;
-}
+        function escapeString(str) { return String(str).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
 
-function resetView() {
-    // Hide results, show upload and recent docs
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('resultsSection').style.display = 'none';
-    
-    // Reset global data
-    rawData = [];
-    headers = [];
-    driverData = {};
-    detectedDriverColumnIndex = -1;
-    
-    showUploadAndRecentDocs();
-}
-
-function escapeString(str) { return String(str).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
-
-window.addEventListener('error', e => { log('⚠️ JS ERROR: ' + e.message); });
+        window.addEventListener('error', e => { log('⚠️ JS ERROR: ' + e.message); });
