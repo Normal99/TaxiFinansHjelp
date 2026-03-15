@@ -12,7 +12,35 @@ document.addEventListener('DOMContentLoaded', () => {
     loadRecentDocuments();
 });
 
-// ─── INDEXEDDB HELPERS ───────────────────────────────────────────
+// ─── TRANSLATION HELPER ──────────────────────────────────────────
+function T(key) {
+    const translations = {
+        no: {
+            noRecentDocs:'Ingen lagrede dokumenter', docRows:'rader', docCols:'kolonner',
+            statCash:'Kontant', statBilled:'Innkjørt total', statTrips:'Antall turer',
+            statKmsOcc:'KM m/passasjer', statHours:'Effektive timer',
+            metricCash:'Kontant', metricBilled:'Innkjørt', metricTrips:'Turer',
+            metricKmsOcc:'KM m/pass.', metricHours:'Timer',
+            tableTotal:'Totalt', newFile:'+ Ny fil', chartEmpty:'Ingen data å vise',
+            clickToFilter:'Klikk for å filtrere', rows:'Skift', amount:'Lønnsgr.', kms:'KM',
+            docTitleSuffix:'Sjåfør Analyse',
+        },
+        tr: {
+            noRecentDocs:'Henüz belge kaydedilmedi', docRows:'satır', docCols:'sütun',
+            statCash:'Nakit Tahsilat', statBilled:'Toplam Hasılat', statTrips:'Sefer Sayısı',
+            statKmsOcc:'Yolculu KM', statHours:'Aktif Çalışma Saati',
+            metricCash:'Nakit', metricBilled:'Hasılat', metricTrips:'Sefer',
+            metricKmsOcc:'Yolculu KM', metricHours:'Aktif Saat',
+            tableTotal:'Toplam', newFile:'+ Yeni Dosya', chartEmpty:'Gösterilecek veri yok',
+            clickToFilter:'Filtrelemek için tıklayın', rows:'Vardiya', amount:'Kazanç', kms:'KM',
+            docTitleSuffix:'Şoför Analizi',
+        }
+    };
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'no';
+    return (translations[lang] && translations[lang][key]) || (translations['no'][key]) || key;
+}
+
+
 function openDB() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, 1);
@@ -229,7 +257,7 @@ function openDocument(doc) {
     allData = doc.data;
     
     // Update UI with document name in page title
-    document.title = `${doc.name} - Sjåfør Analyse`;
+    document.title = `${doc.name} - ${T('docTitleSuffix')}`;
     
     processAllData();
 }
@@ -318,17 +346,17 @@ function updateStats() {
         </div>` : ''}
         ${cashCol ? `
         <div class="stat-tile">
-            <span class="stat-tile-label">Kontant</span>
+            <span class="stat-tile-label">${T('statCash')}</span>
             <span class="stat-tile-value accent">${formatCurrency(totalCash)}</span>
         </div>` : ''}
         ${billedCol ? `
         <div class="stat-tile">
-            <span class="stat-tile-label">Innkjørt total</span>
+            <span class="stat-tile-label">${T('statBilled')}</span>
             <span class="stat-tile-value accent">${formatCurrency(totalBilled)}</span>
         </div>` : ''}
         ${tripsCol ? `
         <div class="stat-tile">
-            <span class="stat-tile-label">Antall turer</span>
+            <span class="stat-tile-label">${T('statTrips')}</span>
             <span class="stat-tile-value accent">${formatNumber(totalTrips)}</span>
         </div>` : ''}
         ${kmsCol ? `
@@ -338,12 +366,12 @@ function updateStats() {
         </div>` : ''}
         ${kmsOccupiedCol ? `
         <div class="stat-tile">
-            <span class="stat-tile-label">KM m/passasjer</span>
+            <span class="stat-tile-label">${T('statKmsOcc')}</span>
             <span class="stat-tile-value accent">${formatNumber(totalKmsOccupied)} km</span>
         </div>` : ''}
         ${hoursCol ? `
         <div class="stat-tile">
-            <span class="stat-tile-label">Effektive timer</span>
+            <span class="stat-tile-label">${T('statHours')}</span>
             <span class="stat-tile-value accent">${formatNumber(totalHours)} t</span>
         </div>` : ''}
     `;
@@ -450,47 +478,47 @@ function renderDriverCards() {
                 </div>
                 <div class="driver-name-block">
                     <div class="driver-name">${escapeHtml(driver.name)}</div>
-                    <div class="driver-hint" data-i18n="clickToFilter">Klikk for å filtrere</div>
+                    <div class="driver-hint" data-i18n="clickToFilter">${T('clickToFilter')}</div>
                 </div>
             </div>
             <div class="card-metrics">
                 <div class="metric">
-                    <div class="metric-label" data-i18n="rows">Skift</div>
+                    <div class="metric-label" data-i18n="rows">${T('rows')}</div>
                     <div class="metric-val">${driver.rows.length}</div>
                 </div>
                 ${driver.amount > 0 ? `
                 <div class="metric">
-                    <div class="metric-label" data-i18n="amount">Lønnsgr.</div>
+                    <div class="metric-label" data-i18n="amount">${T('amount')}</div>
                     <div class="metric-val hi">${formatCurrency(driver.amount)}</div>
                 </div>` : ''}
                 ${driver.cash > 0 ? `
                 <div class="metric">
-                    <div class="metric-label">Kontant</div>
+                    <div class="metric-label">${T('metricCash')}</div>
                     <div class="metric-val" style="color:var(--green)">${formatCurrency(driver.cash)}</div>
                 </div>` : ''}
                 ${driver.billed > 0 ? `
                 <div class="metric">
-                    <div class="metric-label">Innkjørt</div>
+                    <div class="metric-label">${T('metricBilled')}</div>
                     <div class="metric-val">${formatCurrency(driver.billed)}</div>
                 </div>` : ''}
                 ${driver.trips > 0 ? `
                 <div class="metric">
-                    <div class="metric-label">Turer</div>
+                    <div class="metric-label">${T('metricTrips')}</div>
                     <div class="metric-val">${formatNumber(driver.trips)}</div>
                 </div>` : ''}
                 ${driver.kms > 0 ? `
                 <div class="metric">
-                    <div class="metric-label" data-i18n="kms">KM</div>
+                    <div class="metric-label" data-i18n="kms">${T('kms')}</div>
                     <div class="metric-val" style="color:var(--green)">${formatNumber(driver.kms)}</div>
                 </div>` : ''}
                 ${driver.kmsOccupied > 0 ? `
                 <div class="metric">
-                    <div class="metric-label">KM m/pass.</div>
+                    <div class="metric-label">${T('metricKmsOcc')}</div>
                     <div class="metric-val">${formatNumber(driver.kmsOccupied)}</div>
                 </div>` : ''}
                 ${driver.hours > 0 ? `
                 <div class="metric">
-                    <div class="metric-label">Timer</div>
+                    <div class="metric-label">${T('metricHours')}</div>
                     <div class="metric-val">${formatNumber(driver.hours)} t</div>
                 </div>` : ''}
             </div>
@@ -662,7 +690,7 @@ function renderTableContent(data, driverCol) {
     }
 
     totalRow.innerHTML = headers.map((h, i) => 
-        i === 0 ? `<td><strong>Totalt</strong></td>` : '<td></td>'
+        i === 0 ? `<td><strong>${T('tableTotal')}</strong></td>` : '<td></td>'
     ).join('');
     
     tbody.appendChild(totalRow);
@@ -701,7 +729,7 @@ function renderRecentList(docs) {
         } else {
             const hint = document.createElement('p');
             hint.id = 'noRecentHint';
-            hint.textContent = 'Ingen lagrede dokumenter';
+            hint.textContent = T('noRecentDocs');
             hint.style.cssText = 'font-size:0.75rem;color:var(--text-dim);margin-top:10px;';
             container.appendChild(hint);
         }
@@ -761,8 +789,8 @@ function renderRecentList(docs) {
                     <span class="doc-date">${formattedDate}</span>
                 </div>
                 <div class="doc-meta">
-                    <span class="doc-rows">${doc.rowCount} rader</span>
-                    ${doc.data[0] ? `<span class="doc-cols">${Object.keys(doc.data[0]).length} kolonner</span>` : ''}
+                    <span class="doc-rows">${doc.rowCount} ${T('docRows')}</span>
+                    ${doc.data[0] ? `<span class="doc-cols">${Object.keys(doc.data[0]).length} ${T('docCols')}</span>` : ''}
                 </div>
             `;
 
@@ -823,58 +851,152 @@ function setLang(lang) {
     // Translate all elements with data-i18n attribute
     const translations = {
         no: {
-            title: 'Sjåfør',
+            // Header & page
+            title:           'Sjåfør',
+            pageTitle:       'Sjåfør - Taxi Finans',
+            // Upload
             recentDocsTitle: 'Nylige dokumenter',
-            uploadTitle: 'Last opp<br>Excel-fil',
-            uploadSub: 'Støtter .xlsx og .xls — gjenkjenner sjåførkolonne automatisk',
-            chooseFile: 'Velg fil',
-            dragDrop: 'Klikk eller dra og slipp Excel-filen her',
-            totalRows: 'Totalt antall rader',
-            totalAmount: 'Totalt lønngrunnlag',
-            totalKms: 'Totalt KM',
-            uniqueDrivers: 'Unike sjåfører',
-            cardsTitle: 'Sjåføroversikt',
-            cardsSub: 'Klikk på et kort for å filtrere tabellen',
-            tableTitle: 'Skift',
-            filterBy: 'FILTRER:',
-            allDrivers: 'Alle sjåfører',
-            sortBy: 'SORTER:',
-            sortNone: 'Ingen',
-            sortWages: 'Lønngrunnlag ↓',
-            sortKms: 'KM ↓',
-            amount: 'Lønngrunnlag',
-            kms: 'KM',
-            rows: 'Rader',
-            clickToFilter: 'Klikk for å filtrere',
-            loading: 'Laster data...',
-            errorTitle: 'Feil'
+            noRecentDocs:    'Ingen lagrede dokumenter',
+            uploadTitle:     'Last opp<br>Excel-fil',
+            uploadSub:       'Støtter .xlsx og .xls — sjåførkolonne gjenkjennes automatisk',
+            chooseFile:      'Velg fil',
+            dragDrop:        'Klikk eller dra og slipp Excel-filen her',
+            // Recent doc meta
+            docRows:         'rader',
+            docCols:         'kolonner',
+            // Loading / errors
+            loading:         'Laster data...',
+            errorTitle:      'Feil',
+            // Stats strip
+            totalRows:       'Totalt skift',
+            uniqueDrivers:   'Sjåfører',
+            totalAmount:     'Lønnsgrunnlag',
+            statCash:        'Kontant',
+            statBilled:      'Innkjørt total',
+            statTrips:       'Antall turer',
+            totalKms:        'KM totalt',
+            statKmsOcc:      'KM m/passasjer',
+            statHours:       'Effektive timer',
+            // Driver cards
+            cardsTitle:      'Sjåføroversikt',
+            cardsSub:        'Klikk på et kort for å filtrere tabellen',
+            clickToFilter:   'Klikk for å filtrere',
+            // Card metrics
+            rows:            'Skift',
+            amount:          'Lønnsgr.',
+            metricCash:      'Kontant',
+            metricBilled:    'Innkjørt',
+            metricTrips:     'Turer',
+            kms:             'KM',
+            metricKmsOcc:    'KM m/pass.',
+            metricHours:     'Timer',
+            // Table
+            tableTitle:      'Skiftdata',
+            filterBy:        'FILTRER:',
+            allDrivers:      'Alle sjåfører',
+            sortBy:          'SORTER:',
+            sortNone:        'Ingen sortering',
+            sortWages:       'Lønngrunnlag ↓',
+            sortKms:         'KM ↓',
+            tableTotal:      'Totalt',
+            newFile:         '+ Ny fil',
+            // Chart
+            chartTitle:      'Graf per skift',
+            chartDriver:     'Sjåfør',
+            chartMetric:     'Metrikk',
+            chartAll:        'Alle sjåfører',
+            chartBar:        '▌▌ Søyle',
+            chartLine:       '∿ Linje',
+            chartAccum:      '∑ Akkumulert',
+            chartEmpty:      'Ingen data å vise',
+            chartBarTitle:   'Søylediagram',
+            chartLineTitle:  'Linjediagram',
+            chartAccumTitle: 'Vis akkumulert sum over skift',
+            chartReset:      '✕ Alle',
+            // Chart metric labels
+            mLønn:           'Lønnsgrunnlag',
+            mInnkjort:       'Innkjørt total',
+            mKontant:        'Kontant',
+            mKmTotal:        'KM totalt',
+            mKmOcc:          'KM m/passasjer',
+            mTurer:          'Antall turer',
+            mTimer:          'Effektive timer',
+            // Doc title suffix
+            docTitleSuffix:  'Sjåfør Analyse',
         },
         tr: {
-            title: 'Şoför',
+            // Header & page
+            title:           'Şoför',
+            pageTitle:       'Şoför - Taksi Finans',
+            // Upload
             recentDocsTitle: 'Son Belgeler',
-            uploadTitle: 'Excel<br>Fili Yükle',
-            uploadSub: '.xlsx ve .xls desteklenir — şoför sütunu otomatik algılanır',
-            chooseFile: 'Dosya Seç',
-            dragDrop: 'Excel dosyasını buraya sürükleyin veya tıklayın',
-            totalRows: 'Toplam Satır Sayısı',
-            totalAmount: 'Toplam Maaş Tabanı',
-            totalKms: 'Toplam KM',
-            uniqueDrivers: 'Benzersiz Şoförler',
-            cardsTitle: 'Şoför Özeti',
-            cardsSub: 'Tabloyu filtrelemek için karta tıklayın',
-            tableTitle: 'Vardiya',
-            filterBy: 'FİLTRELE:',
-            allDrivers: 'Tüm Şoförler',
-            sortBy: 'SIRALA:',
-            sortNone: 'Yok',
-            sortWages: 'Maaş Tabanı ↓',
-            sortKms: 'KM ↓',
-            amount: 'Maaş Tabanı',
-            kms: 'KM',
-            rows: 'Satırlar',
-            clickToFilter: 'Filtrelemek için tıklayın',
-            loading: 'Veriler yükleniyor...',
-            errorTitle: 'Hata'
+            noRecentDocs:    'Henüz belge kaydedilmedi',
+            uploadTitle:     'Excel<br>Dosyası Yükle',
+            uploadSub:       '.xlsx ve .xls desteklenir — sürücü sütunu otomatik algılanır',
+            chooseFile:      'Dosya Seç',
+            dragDrop:        'Tıklayın veya Excel dosyasını buraya sürükleyip bırakın',
+            // Recent doc meta
+            docRows:         'satır',
+            docCols:         'sütun',
+            // Loading / errors
+            loading:         'Veriler yükleniyor...',
+            errorTitle:      'Hata',
+            // Stats strip
+            totalRows:       'Toplam Vardiya',
+            uniqueDrivers:   'Şoförler',
+            totalAmount:     'Ücret Tabanı',
+            statCash:        'Nakit Tahsilat',
+            statBilled:      'Toplam Hasılat',
+            statTrips:       'Sefer Sayısı',
+            totalKms:        'Toplam KM',
+            statKmsOcc:      'Yolculu KM',
+            statHours:       'Aktif Çalışma Saati',
+            // Driver cards
+            cardsTitle:      'Şoför Özeti',
+            cardsSub:        'Tabloyu filtrelemek için bir karta tıklayın',
+            clickToFilter:   'Filtrelemek için tıklayın',
+            // Card metrics
+            rows:            'Vardiya',
+            amount:          'Kazanç',
+            metricCash:      'Nakit',
+            metricBilled:    'Hasılat',
+            metricTrips:     'Sefer',
+            kms:             'KM',
+            metricKmsOcc:    'Yolculu KM',
+            metricHours:     'Aktif Saat',
+            // Table
+            tableTitle:      'Vardiya Verileri',
+            filterBy:        'FİLTRELE:',
+            allDrivers:      'Tüm Şoförler',
+            sortBy:          'SIRALA:',
+            sortNone:        'Sıralama yapma',
+            sortWages:       'Ücret Tabanı ↓',
+            sortKms:         'KM ↓',
+            tableTotal:      'Toplam',
+            newFile:         '+ Yeni Dosya',
+            // Chart
+            chartTitle:      'Vardiyaya Göre Grafik',
+            chartDriver:     'Şoför',
+            chartMetric:     'Metrik',
+            chartAll:        'Tüm Şoförler',
+            chartBar:        '▌▌ Çubuk',
+            chartLine:       '∿ Çizgi',
+            chartAccum:      '∑ Kümülatif',
+            chartEmpty:      'Gösterilecek veri yok',
+            chartBarTitle:   'Çubuk grafik',
+            chartLineTitle:  'Çizgi grafik',
+            chartAccumTitle: 'Vardiyalar arası birikimli toplamı göster',
+            chartReset:      '✕ Tümü',
+            // Chart metric labels
+            mLønn:           'Ücret Tabanı',
+            mInnkjort:       'Toplam Hasılat',
+            mKontant:        'Nakit',
+            mKmTotal:        'Toplam KM',
+            mKmOcc:          'Yolculu KM',
+            mTurer:          'Sefer Sayısı',
+            mTimer:          'Aktif Saat',
+            // Doc title suffix
+            docTitleSuffix:  'Şoför Analizi',
         }
     };
 
@@ -882,7 +1004,6 @@ function setLang(lang) {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (t[key]) {
-            // Preserve HTML in title tags
             if (key === 'title' || key === 'uploadTitle') {
                 el.innerHTML = t[key];
             } else {
@@ -890,6 +1011,65 @@ function setLang(lang) {
             }
         }
     });
+
+    // Update hardcoded strings not covered by data-i18n
+    const setEl = (id, key) => { const el = document.getElementById(id); if (el && t[key]) el.textContent = t[key]; };
+    setEl('chartTypebar',   'chartBar');
+    setEl('chartTypeline',  'chartLine');
+    setEl('chartAccumBtn',  'chartAccum');
+
+    const setAttr = (id, attr, key) => { const el = document.getElementById(id); if (el && t[key]) el.setAttribute(attr, t[key]); };
+    setAttr('chartTypebar',  'title', 'chartBarTitle');
+    setAttr('chartTypeline', 'title', 'chartLineTitle');
+    setAttr('chartAccumBtn', 'title', 'chartAccumTitle');
+
+    // Chart section heading
+    const chartHeading = document.querySelector('#chartSection h2 span, #chartSection h2');
+    if (chartHeading) chartHeading.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = t.chartTitle + ' '; });
+
+    // Chart driver label
+    document.querySelectorAll('.chart-section-label').forEach((el, i) => {
+        el.textContent = [t.chartDriver, t.chartMetric][i] || el.textContent;
+    });
+
+    // Update "Alle sjåfører" in chart dropdown
+    const chartAllOpt = document.querySelector('#chartDriverFilter option[value=""]');
+    if (chartAllOpt) chartAllOpt.textContent = t.chartAll;
+
+    // Update chart metric option labels
+    const metricMap = {
+        'Lønnsgrunnlag':           t.mLønn,
+        'Innkjørt total Lav sats': t.mInnkjort,
+        'Faktisk kont.':           t.mKontant,
+        'Km total':                t.mKmTotal,
+        'Km opptatt':              t.mKmOcc,
+        'Antall turer':            t.mTurer,
+        'Effektiv timer':          t.mTimer,
+    };
+    document.querySelectorAll('#chartMetricFilter option').forEach(opt => {
+        if (metricMap[opt.value]) opt.textContent = metricMap[opt.value];
+    });
+
+    // Chart reset button
+    document.querySelectorAll('[onclick="resetChartFilter()"]').forEach(el => { el.textContent = t.chartReset; });
+
+    // Update CHART_METRICS labels live so tooltips and legends update
+    if (window.CHART_METRICS) {
+        CHART_METRICS['Lønnsgrunnlag'].label           = t.mLønn;
+        CHART_METRICS['Innkjørt total Lav sats'].label = t.mInnkjort;
+        CHART_METRICS['Faktisk kont.'].label           = t.mKontant;
+        CHART_METRICS['Km total'].label                = t.mKmTotal;
+        CHART_METRICS['Km opptatt'].label              = t.mKmOcc;
+        CHART_METRICS['Antall turer'].label            = t.mTurer;
+        CHART_METRICS['Effektiv timer'].label          = t.mTimer;
+    }
+
+    // Re-render dynamic sections if data is loaded
+    if (allData.length > 0) {
+        updateStats();
+        renderDriverCards();
+        if (shiftChart) renderChart();
+    }
 }
 
 // ─── CHART ───────────────────────────────────────────────────────
