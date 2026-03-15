@@ -23,7 +23,7 @@ function T(key) {
             metricKmsOcc:'KM m/pass.', metricHours:'Timer',
             tableTotal:'Totalt', newFile:'+ Ny fil', chartEmpty:'Ingen data å vise',
             clickToFilter:'Klikk for å filtrere', rows:'Skift', amount:'Lønnsgr.', kms:'KM',
-            docTitleSuffix:'Sjåfør Analyse',
+            docTitleSuffix:'Sjåfør Analyse', backBtn:'Tilbake',
         },
         tr: {
             noRecentDocs:'Henüz belge kaydedilmedi', docRows:'satır', docCols:'sütun',
@@ -33,7 +33,7 @@ function T(key) {
             metricKmsOcc:'Yolculu KM', metricHours:'Aktif Saat',
             tableTotal:'Toplam', newFile:'+ Yeni Dosya', chartEmpty:'Gösterilecek veri yok',
             clickToFilter:'Filtrelemek için tıklayın', rows:'Vardiya', amount:'Kazanç', kms:'KM',
-            docTitleSuffix:'Şoför Analizi',
+            docTitleSuffix:'Şoför Analizi', backBtn:'Geri',
         }
     };
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'no';
@@ -272,6 +272,10 @@ function processAllData() {
     
     if (uploadSection) uploadSection.style.display = 'none';
     if (recentListContainer) recentListContainer.style.display = 'none';
+
+    // Show back button
+    const backBtn = document.getElementById('backBtn');
+    if (backBtn) backBtn.classList.add('visible');
 
     // Skjul loading, vis results
     document.getElementById('loading').style.display = 'none';
@@ -831,13 +835,22 @@ function showUploadSection() {
     const resultsContainer = document.getElementById('resultsSection');
     if (resultsContainer) resultsContainer.style.display = 'none';
     
-    // Show upload section
+    // Show upload section and recent documents
     const uploadSection = document.getElementById('uploadSection');
     if (uploadSection) uploadSection.style.display = 'flex';
-    
-    // Hide new file button
+
+    const recentListContainer = document.getElementById('recentListContainer');
+    if (recentListContainer) recentListContainer.style.display = 'block';
+
+    // Hide back button and new file button
     const newFileBtn = document.getElementById('newFileBtn');
     if (newFileBtn) newFileBtn.style.display = 'none';
+
+    const backBtn = document.getElementById('backBtn');
+    if (backBtn) backBtn.classList.remove('visible');
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ─── LANGUAGE SWITCHING ──────────────────────────────────────────
@@ -900,8 +913,7 @@ function setLang(lang) {
             sortKms:         'KM ↓',
             tableTotal:      'Totalt',
             newFile:         '+ Ny fil',
-            // Chart
-            chartTitle:      'Graf per skift',
+            backBtn:         'Tilbake',
             chartDriver:     'Sjåfør',
             chartMetric:     'Metrikk',
             chartAll:        'Alle sjåfører',
@@ -974,8 +986,7 @@ function setLang(lang) {
             sortKms:         'KM ↓',
             tableTotal:      'Toplam',
             newFile:         '+ Yeni Dosya',
-            // Chart
-            chartTitle:      'Vardiyaya Göre Grafik',
+            backBtn:         'Geri',
             chartDriver:     'Şoför',
             chartMetric:     'Metrik',
             chartAll:        'Tüm Şoförler',
