@@ -435,8 +435,8 @@
 
         /* ── TABLE ── */
         .table-container {
-            max-height: calc(100vh - 320px);
             overflow: auto;
+            max-height: 520px;
         }
 
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
@@ -606,7 +606,7 @@
 
             <!-- Table Card -->
             <div class="table-card fade-in">
-                <div class="p-6 border-b border-gray-200 bg-white sticky top-[60px] z-10">
+                <div class="p-6 border-b border-gray-200 bg-white">
                     <h2 class="text-xl font-bold text-gray-800 mb-4" data-i18n="tableTitle">Skift</h2>
 
                     <!-- Filters -->
@@ -645,6 +645,76 @@
                 </div>
             </div>
 
+            <!-- Chart Section -->
+            <div class="table-card fade-in" id="chartSection" style="margin-top:24px;">
+                <div class="p-5 border-b border-gray-200 bg-white">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color:var(--accent)">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            Graf per skift
+                        </h2>
+                        <!-- Chart type toggle -->
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <div style="display:flex; gap:4px; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:3px;">
+                                <button id="chartTypebar" onclick="setChartType('bar')" style="
+                                    padding:6px 14px; border-radius:6px; border:none; cursor:pointer;
+                                    font-family:inherit; font-size:0.82rem; font-weight:600;
+                                    background:var(--accent); color:#000; transition:all 0.15s;
+                                " title="Søylediagram">▌▌ Søyle</button>
+                                <button id="chartTypeline" onclick="setChartType('line')" style="
+                                    padding:6px 14px; border-radius:6px; border:none; cursor:pointer;
+                                    font-family:inherit; font-size:0.82rem; font-weight:600;
+                                    background:transparent; color:var(--text-muted); transition:all 0.15s;
+                                " title="Linjediagram">∿ Linje</button>
+                            </div>
+                            <button id="chartAccumBtn" onclick="toggleAccumulate()" style="
+                                padding:6px 14px; border-radius:8px; border:1px solid var(--border2);
+                                background:transparent; color:var(--text-muted);
+                                font-family:inherit; font-size:0.82rem; font-weight:600;
+                                cursor:pointer; transition:all 0.15s; white-space:nowrap;
+                            " title="Vis akkumulert sum over skift">∑ Akkumulert</button>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr auto; gap:12px; align-items:end;">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">Sjåfør</label>
+                            <select id="chartDriverFilter">
+                                <option value="">Alle sjåfører</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">Metrikk</label>
+                            <select id="chartMetricFilter">
+                                <option value="Lønnsgrunnlag">Lønnsgrunnlag</option>
+                                <option value="Innkjørt total Lav sats">Innkjørt total</option>
+                                <option value="Faktisk kont.">Kontant</option>
+                                <option value="Km total">KM totalt</option>
+                                <option value="Km opptatt">KM m/passasjer</option>
+                                <option value="Antall turer">Antall turer</option>
+                                <option value="Effektiv timer">Effektive timer</option>
+                            </select>
+                        </div>
+                        <button onclick="resetChartFilter()" style="
+                            background:var(--surface2); border:1px solid var(--border2);
+                            color:var(--text-muted); font-family:inherit; font-size:0.85rem;
+                            font-weight:600; padding:9px 16px; border-radius:8px;
+                            cursor:pointer; white-space:nowrap; transition:all 0.15s;
+                            height:40px; align-self:end;
+                        " onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">
+                            ✕ Alle
+                        </button>
+                    </div>
+                    <!-- Clickable driver chips -->
+                    <div id="chartDriverChips" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;"></div>
+                </div>
+                <div style="padding:24px 28px; position:relative;">
+                    <canvas id="shiftChart" style="max-height:380px;"></canvas>
+                    <p id="chartEmpty" style="display:none; text-align:center; color:var(--text-dim); font-size:0.9rem; padding:60px 0;">Ingen data å vise</p>
+                </div>
+            </div>
+
         </section>
 
     </main>
@@ -652,6 +722,7 @@
     <!-- Debug Console (hidden by default) -->
     <pre id="debugConsole" style="display:none; position:fixed; bottom:0; left:0; right:0; padding:1rem; font-size:0.75rem; z-index:1000;"></pre>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

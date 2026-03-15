@@ -892,7 +892,285 @@ function setLang(lang) {
     });
 }
 
-// ─── DEBUG CONSOLE (optional, hidden by default) ──────────────────
+// ─── CHART ───────────────────────────────────────────────────────
+let shiftChart = null;
+let chartDriverFilter = '';
+let chartType = 'bar';
+let chartAccumulate = false;
+
+function setChartType(type) {
+    chartType = type;
+    const barBtn  = document.getElementById('chartTypebar');
+    const lineBtn = document.getElementById('chartTypeline');
+    if (barBtn && lineBtn) {
+        barBtn.style.background  = type === 'bar'  ? 'var(--accent)' : 'transparent';
+        barBtn.style.color       = type === 'bar'  ? '#000'          : 'var(--text-muted)';
+        lineBtn.style.background = type === 'line' ? 'var(--accent)' : 'transparent';
+        lineBtn.style.color      = type === 'line' ? '#000'          : 'var(--text-muted)';
+    }
+    renderChart();
+}
+
+function toggleAccumulate() {
+    chartAccumulate = !chartAccumulate;
+    const btn = document.getElementById('chartAccumBtn');
+    if (btn) {
+        btn.style.background  = chartAccumulate ? 'var(--accent)' : 'transparent';
+        btn.style.borderColor = chartAccumulate ? 'var(--accent)' : 'var(--border2)';
+        btn.style.color       = chartAccumulate ? '#000'          : 'var(--text-muted)';
+    }
+    renderChart();
+}
+
+// Metric config: key = column name, label, formatter, color
+const CHART_METRICS = {
+    'Lønnsgrunnlag':             { label: 'Lønnsgrunnlag',     color: '#F7C520', fmt: v => formatCurrency(v) },
+    'Innkjørt total Lav sats':   { label: 'Innkjørt total',    color: '#60A5FA', fmt: v => formatCurrency(v) },
+    'Faktisk kont.':             { label: 'Kontant',            color: '#34D399', fmt: v => formatCurrency(v) },
+    'Km total':                  { label: 'KM totalt',          color: '#A78BFA', fmt: v => formatNumber(v) + ' km' },
+    'Km opptatt':                { label: 'KM m/passasjer',     color: '#FB923C', fmt: v => formatNumber(v) + ' km' },
+    'Antall turer':              { label: 'Antall turer',       color: '#F472B6', fmt: v => formatNumber(v) },
+    'Effektiv timer':            { label: 'Effektive timer',    color: '#38BDF8', fmt: v => formatNumber(v) + ' t' },
+};
+
+function initChart() {
+    // Populate chart driver dropdown
+    const chartSel = document.getElementById('chartDriverFilter');
+    if (!chartSel) return;
+
+    // Find driver column
+    let driverCol = findDriverColumn();
+    const drivers = [...new Set(allData.map(r => String(r[driverCol]).trim()).filter(Boolean))].sort();
+
+    chartSel.innerHTML = '<option value="">Alle sjåfører</option>';
+    drivers.forEach(d => {
+        const o = document.createElement('option');
+        o.value = d; o.textContent = d;
+        chartSel.appendChild(o);
+    });
+
+    // Build clickable driver chips
+    const chips = document.getElementById('chartDriverChips');
+    if (chips) {
+        chips.innerHTML = '';
+        // "All" chip
+        const allChip = makeChip('Alle', '', true);
+        chips.appendChild(allChip);
+        drivers.forEach(d => chips.appendChild(makeChip(d, d, false)));
+    }
+
+    chartSel.addEventListener('change', () => {
+        chartDriverFilter = chartSel.value;
+        updateChipSelection(chartDriverFilter);
+        renderChart();
+    });
+
+    document.getElementById('chartMetricFilter').addEventListener('change', renderChart);
+
+    renderChart();
+}
+
+function makeChip(label, value, active) {
+    const btn = document.createElement('button');
+    btn.textContent = label;
+    btn.dataset.value = value;
+    btn.className = 'chart-chip' + (active ? ' chart-chip-active' : '');
+    btn.style.cssText = `
+        padding: 5px 14px; border-radius: 20px; font-family: inherit;
+        font-size: 0.8rem; font-weight: 600; cursor: pointer;
+        border: 1px solid ${active ? 'var(--accent)' : 'var(--border2)'};
+        background: ${active ? 'var(--accent)' : 'var(--surface2)'};
+        color: ${active ? '#000' : 'var(--text-muted)'};
+        transition: all 0.15s ease;
+    `;
+    btn.addEventListener('click', () => {
+        chartDriverFilter = value;
+        document.getElementById('chartDriverFilter').value = value;
+        updateChipSelection(value);
+        renderChart();
+    });
+    return btn;
+}
+
+function updateChipSelection(value) {
+    const chips = document.getElementById('chartDriverChips');
+    if (!chips) return;
+    chips.querySelectorAll('button').forEach(btn => {
+        const active = btn.dataset.value === value;
+        btn.style.background  = active ? 'var(--accent)' : 'var(--surface2)';
+        btn.style.borderColor = active ? 'var(--accent)' : 'var(--border2)';
+        btn.style.color       = active ? '#000'          : 'var(--text-muted)';
+    });
+}
+
+function resetChartFilter() {
+    chartDriverFilter = '';
+    const sel = document.getElementById('chartDriverFilter');
+    if (sel) sel.value = '';
+    updateChipSelection('');
+    renderChart();
+}
+
+function renderChart() {
+    const metricKey = document.getElementById('chartMetricFilter')?.value || 'Lønnsgrunnlag';
+    const metric    = CHART_METRICS[metricKey] || CHART_METRICS['Lønnsgrunnlag'];
+    const driverCol = findDriverColumn();
+
+    // Filter rows by selected driver
+    let rows = [...allData];
+    if (chartDriverFilter) {
+        rows = rows.filter(r => String(r[driverCol]).trim() === chartDriverFilter);
+    }
+
+    // Sort by shift number (Skiftnr.)
+    const shiftKey = Object.keys(allData[0]).find(k => k.toLowerCase().includes('skiftnr')) || null;
+    const dateKey  = Object.keys(allData[0]).find(k => k.toLowerCase().includes('start dato')) || null;
+
+    rows.sort((a, b) => {
+        const ka = shiftKey ? parseInt(a[shiftKey]) : 0;
+        const kb = shiftKey ? parseInt(b[shiftKey]) : 0;
+        return ka - kb;
+    });
+
+    // Build labels and values
+    const labels = rows.map(r => {
+        const shift = shiftKey ? '#' + r[shiftKey] : '';
+        const date  = dateKey  ? r[dateKey]        : '';
+        const driver = chartDriverFilter ? '' : (' · ' + String(r[driverCol]).trim());
+        return [shift + driver, date].filter(Boolean).join(' ');
+    });
+
+    const values = rows.map(r => {
+        let val = r[metricKey];
+        if (val === undefined) {
+            const found = Object.keys(r).find(k => k.toLowerCase().trim() === metricKey.toLowerCase().trim());
+            val = found ? r[found] : 0;
+        }
+        return parseFloat(val) || 0;
+    });
+
+    // Running total if accumulate is on
+    const displayValues = chartAccumulate
+        ? values.reduce((acc, v, i) => { acc.push((acc[i - 1] || 0) + v); return acc; }, [])
+        : values;
+
+    const empty  = document.getElementById('chartEmpty');
+    const canvas = document.getElementById('shiftChart');
+
+    if (!displayValues.some(v => v > 0)) {
+        if (empty) empty.style.display = 'block';
+        if (canvas) canvas.style.display = 'none';
+        return;
+    }
+    if (empty) empty.style.display = 'none';
+    if (canvas) canvas.style.display = 'block';
+
+    const ctx = canvas.getContext('2d');
+
+    if (shiftChart) { shiftChart.destroy(); shiftChart = null; }
+
+    const isLine = chartType === 'line';
+
+    const dataset = isLine ? {
+        label: metric.label,
+        data: displayValues,
+        borderColor:     metric.color,
+        backgroundColor: metric.color + '22',
+        borderWidth: 2.5,
+        pointBackgroundColor: metric.color,
+        pointBorderColor:     '#12151C',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        fill: true,
+        tension: 0.35,
+    } : {
+        label: metric.label,
+        data: displayValues,
+        backgroundColor: metric.color + '99',
+        borderColor:     metric.color,
+        borderWidth: 2,
+        borderRadius: 6,
+        borderSkipped: false,
+    };
+
+    shiftChart = new Chart(ctx, {
+        type: isLine ? 'line' : 'bar',
+        data: { labels, datasets: [dataset] },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#191D27',
+                    borderColor: '#252C3E',
+                    borderWidth: 1,
+                    titleColor: '#E6E9F4',
+                    bodyColor: '#7B849A',
+                    padding: 12,
+                    callbacks: {
+                        label: ctx => '  ' + metric.fmt(ctx.parsed.y)
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#4A5268',
+                        font: { family: 'Inter', size: 11 },
+                        maxRotation: 45,
+                    },
+                    grid: { color: '#1E2433' },
+                    border: { color: '#1E2433' }
+                },
+                y: {
+                    ticks: {
+                        color: '#7B849A',
+                        font: { family: 'Inter', size: 11 },
+                        callback: v => metric.fmt(v)
+                    },
+                    grid: { color: '#1E2433' },
+                    border: { color: '#1E2433' },
+                    beginAtZero: true,
+                }
+            }
+        }
+    });
+}
+
+// Hook into processAllData — called after data is ready
+const _origProcessAllData = processAllData;
+processAllData = function() {
+    _origProcessAllData();
+    initChart();
+};
+
+// Also hook into renderDriverCards so clicking a card updates the chart
+const _origRenderDriverCards = renderDriverCards;
+renderDriverCards = function() {
+    _origRenderDriverCards();
+    // Add chart-sync click to each card
+    const grid = document.getElementById('summaryGrid');
+    if (!grid) return;
+    grid.querySelectorAll('.driver-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const nameEl = card.querySelector('.driver-name');
+            if (!nameEl) return;
+            const name = nameEl.textContent.trim();
+            chartDriverFilter = name;
+            const sel = document.getElementById('chartDriverFilter');
+            if (sel) sel.value = name;
+            updateChipSelection(name);
+            renderChart();
+            setTimeout(() => {
+                document.getElementById('chartSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 120);
+        });
+    });
+};
+
+
 const debugConsole = document.getElementById('debugConsole');
 if (debugConsole) {
     window.debugLog = (...args) => {
