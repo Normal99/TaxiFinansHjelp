@@ -1,4 +1,4 @@
-        :root {
+:root {
             --bg:        #0B0D12;
             --surface:   #12151C;
             --surface2:  #191D27;
@@ -113,6 +113,72 @@
             padding: 32px 32px 64px;
         }
 
+        /* ─── RECENT DOCUMENTS CONTAINER ─── */
+        #recentListContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        #recentListContainer h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #recentListContainer h2::before {
+            content: '📁';
+            font-size: 1.2rem;
+        }
+
+        /* Version Dropdown Styles */
+        .version-select {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            padding: 10px 16px;
+            width: 100%;
+            max-width: 400px;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .version-select:hover {
+            border-color: var(--accent);
+        }
+
+        .recent-group {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border2);
+        }
+
+        .recent-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .recent-group label {
+            display: block;
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.92rem;
+            margin-bottom: 8px;
+        }
+
         /* ─── UPLOAD ─── */
         #uploadSection {
             display: flex;
@@ -178,24 +244,6 @@
             color: var(--text-muted);
             font-size: 0.88rem;
             margin-top: 10px;
-        }
-
-        .recent-docs {
-            margin-bottom: 30px;
-        }
-
-        .recent-item {
-            background: var(--surface);
-            border: 2px solid var(--border);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .recent-item:hover {
-            border-color: var(--accent);
         }
 
         .btn-upload {
@@ -682,4 +730,4 @@
             .btn-upload {
                 width: 100%;
             }
-        }   
+        }

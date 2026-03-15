@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>TaxiAnalyzer - Debug IndexedDB</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .info { background: #e7f3ff; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        button:hover { background: #45a049; }
+        .clear-btn { background: #f44336; }
+        .clear-btn:hover { background: #da190b; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 4px; overflow-x: auto; max-height: 300px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 IndexedDB Debug Tool</h1>
+        
+        <div class="info" id="statusInfo">Checking database...</div>
+        
+        <button onclick="checkDatabase()">Check Database</button>
+        <button onclick="clearDatabase()" class="clear-btn">Clear All Documents</button>
+        
+        <h2>Documents in IndexedDB:</h2>
+        <pre id="docsOutput">No documents loaded yet.</pre>
+    </div>
+
+    <script>
+        let db;
+
+        function checkDatabase() {
+            const statusInfo = document.getElementById('statusInfo');
+            const docsOutput = document.getElementById('docsOutput');
+            
+            if (!window.indexedDB) {
+                statusInfo.textContent = '❌ IndexedDB is NOT supported in this browser!';
+                return;
+            }
+
+            const request = indexedDB.open("TaxiAnalyzerDB", 1);
+
+            request.onupgradeneeded = function(e) {
+                db = e.target.result;
+                if (!db.objectStoreNames.contains("documents")) {
+                    const store = db.createObjectStore("documents", {
+                        keyPath: "id",
+                        autoIncrement: true
+                    });
+                    store.createIndex("date", "date");
+                    console.log('✅ IndexedDB created');
+                }
+            };
+
+            request.onsuccess = function(e) {
+                db = e.target.result;
+                statusInfo.innerHTML = '✅ <strong>IndexedDB opened successfully!</strong><br>Database: TaxiAnalyzerDB';
+                
+                // Load all documents
+                const tx = db.transaction("documents", "readonly");
+                const store = tx.objectStore("documents");
+                const getReq = store.getAll();
+
+                getReq.onsuccess = function() {
+                    let docs = getReq.result;
+                    
+                    if (!docs || docs.length === 0) {
+                        statusInfo.innerHTML += '<br>⚠️ <strong>No documents found</strong>';
+                        docsOutput.textContent = 'No documents in IndexedDB.';
+                        return;
+                    }
+
+                    // Sort by date descending
+                    docs = docs.sort((a,b) => new Date(b.date) - new Date(a.date));
+                    
+                    statusInfo.innerHTML += `<br>📁 <strong>${docs.length} document(s)</strong> found`;
+                    
+                    let output = `Found ${docs.length} documents:\n\n`;
+                    docs.forEach(doc => {
+                        output += `\n---\nID: ${doc.id}\nName: ${doc.name}\nDate: ${new Date(doc.date).toLocaleString()}\nRows: ${doc.rows}\nData preview (first 2 rows):\n${JSON.stringify(doc.data.slice(0, 2), null, 2)}\n`;
+                    });
+                    
+                    docsOutput.textContent = output;
+                };
+
+                getReq.onerror = function(e) {
+                    statusInfo.innerHTML += '<br>❌ Error loading documents: ' + e.target.error;
+                    docsOutput.textContent = 'Error loading documents.';
+                };
+            };
+
+            request.onerror = function(e) {
+                statusInfo.textContent = '❌ IndexedDB error: ' + e.target.error;
+            };
+        }
+
+        function clearDatabase() {
+            if (!db) {
+                alert('Please check database first!');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to delete ALL documents from IndexedDB?')) {
+                return;
+            }
+
+            const tx = db.transaction("documents", "readwrite");
+            const store = tx.objectStore("documents");
+            
+            // Delete all items
+            const request = store.clear();
+            
+            request.onsuccess = function() {
+                alert('✅ All documents cleared!');
+                checkDatabase();
+            };
+
+            request.onerror = function(e) {
+                alert('❌ Error clearing database: ' + e.target.error);
+            };
+        }
+
+        // Auto-check on load
+        window.onload = checkDatabase;
+    </script>
+</body>
+</html>
