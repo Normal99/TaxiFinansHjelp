@@ -5,19 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sjåfør - Taxi Finans Hjelp</title>
 
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS (layout utilities) -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- SheetJS for Excel parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
-        /* ═══════════════════════════════════════════
-           DARK THEME — adapted from style.css
-        ═══════════════════════════════════════════ */
+        /* ═══ DARK THEME ═══════════════════════════════════════════ */
         :root {
             --bg:          #0B0D12;
             --surface:     #12151C;
@@ -46,19 +39,16 @@
             background-size: 28px 28px;
         }
 
-        /* ── TAILWIND LIGHT-COLOR OVERRIDES ── */
-        .bg-white          { background: var(--surface)  !important; }
-        .bg-gray-50        { background: var(--surface)  !important; }
-        .bg-gray-100       { background: var(--surface2) !important; }
-        .bg-gray-200       { background: var(--border2)  !important; }
-        .text-gray-900, .text-gray-800 { color: var(--text)      !important; }
-        .text-gray-700, .text-gray-600 { color: var(--text-muted)!important; }
-        .text-gray-500, .text-gray-400 { color: var(--text-dim)  !important; }
+        /* ── TAILWIND OVERRIDES ── */
+        .bg-white, .bg-gray-50 { background: var(--surface)  !important; }
+        .bg-gray-100            { background: var(--surface2) !important; }
+        .bg-gray-200            { background: var(--border2)  !important; }
+        .text-gray-900, .text-gray-800 { color: var(--text)       !important; }
+        .text-gray-700, .text-gray-600 { color: var(--text-muted) !important; }
+        .text-gray-500, .text-gray-400 { color: var(--text-dim)   !important; }
         .border-gray-200, .border-gray-100 { border-color: var(--border)  !important; }
-        .border-gray-300   { border-color: var(--border2) !important; }
-        .shadow-sm, .shadow, .shadow-md {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
-        }
+        .border-gray-300        { border-color: var(--border2) !important; }
+        .shadow-sm, .shadow, .shadow-md { box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important; }
 
         /* ── HEADER ── */
         header {
@@ -67,48 +57,29 @@
             backdrop-filter: blur(12px);
             box-shadow: none !important;
         }
-
-        header h1 {
-            color: var(--text) !important;
-            font-size: 1.1rem;
-            font-weight: 800;
-        }
+        header h1 { color: var(--text) !important; font-size: 1.1rem; font-weight: 800; }
 
         /* ── LANG BUTTONS ── */
         #langNO, #langTR {
             background: transparent !important;
             border: 1px solid var(--border2) !important;
             color: var(--text-muted) !important;
-            font-size: 0.82rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            border-radius: 6px;
-            padding: 5px 14px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            box-shadow: none !important;
-            transform: none !important;
+            font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em;
+            border-radius: 6px; padding: 5px 14px; cursor: pointer;
+            transition: all 0.15s ease; box-shadow: none !important;
         }
-        #langNO:hover, #langTR:hover {
-            border-color: var(--accent) !important;
-            color: var(--text) !important;
-        }
+        #langNO:hover, #langTR:hover { border-color: var(--accent) !important; color: var(--text) !important; }
         #langNO.active, #langTR.active {
-            background: var(--accent) !important;
-            border-color: var(--accent) !important;
-            color: #000 !important;
-            font-weight: 700;
+            background: var(--accent) !important; border-color: var(--accent) !important;
+            color: #000 !important; font-weight: 700;
             box-shadow: 0 2px 10px rgba(247,197,32,0.3) !important;
-            transform: none !important;
         }
 
         /* ── SECTION HEADINGS ── */
         h2, h3 {
-            background: none !important;
-            -webkit-background-clip: unset !important;
+            background: none !important; -webkit-background-clip: unset !important;
             -webkit-text-fill-color: var(--text) !important;
-            background-clip: unset !important;
-            color: var(--text) !important;
+            background-clip: unset !important; color: var(--text) !important;
         }
 
         /* ── UPLOAD SECTION ── */
@@ -126,368 +97,329 @@
             border-color: var(--accent) !important;
             background: rgba(247,197,32,0.04) !important;
             box-shadow: 0 0 0 4px var(--accent-glow), 0 20px 40px rgba(0,0,0,0.3) !important;
-            transform: none !important;
         }
         #dropZone svg { color: var(--accent) !important; }
 
+        /* ── LOADED FILES ── */
+        #loadedFilesSection {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        #loadedFilesSection h3 {
+            font-size: 0.85rem; font-weight: 700; color: var(--text) !important;
+            margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+            -webkit-text-fill-color: var(--text) !important;
+        }
+        .file-chip {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; gap: 10px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            transition: border-color 0.15s;
+        }
+        .file-chip:hover { border-color: var(--border2); border-left-color: var(--accent); }
+        .file-chip-name  { font-weight: 700; color: var(--text); font-size: 0.88rem; }
+        .file-chip-meta  { display: flex; align-items: center; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+        .file-chip-month {
+            font-size: 0.7rem; font-weight: 700;
+            background: var(--accent-glow); color: var(--accent);
+            border: 1px solid var(--accent-dim); border-radius: 4px;
+            padding: 2px 8px;
+        }
+        .file-chip-remove {
+            background: none; border: none; cursor: pointer;
+            color: var(--text-dim); font-size: 1rem; padding: 0 2px;
+            line-height: 1; transition: color 0.15s; flex-shrink: 0;
+        }
+        .file-chip-remove:hover { color: var(--red); }
+
+        /* ── VIEW RESULTS BUTTON ── */
+        #viewResultsBtn {
+            display: none;
+            width: 100%; margin-top: 10px;
+            padding: 10px;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-family: inherit; font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; transition: all 0.15s;
+        }
+        #viewResultsBtn:hover { border-color: var(--accent); color: var(--accent); }
+
         /* ── RECENT DOCS ── */
         #recentListContainer {
-            background: var(--surface)  !important;
+            background: var(--surface) !important;
             border: 1px solid var(--border) !important;
             border-radius: 12px !important;
             box-shadow: none !important;
         }
-        #recentListContainer h3 { color: var(--text) !important; font-weight: 700; }
+        #recentListContainer h3 { color: var(--text) !important; font-weight: 700; -webkit-text-fill-color: var(--text) !important; }
         #noRecentHint { color: var(--text-dim) !important; font-size: 0.8rem; }
-
-        .recent-group {
-            margin-bottom: 14px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--border2);
-        }
+        .recent-group { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border2); }
         .recent-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .recent-group label {
-            display: block;
-            font-weight: 700;
-            color: var(--text);
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-        }
-
+        .recent-group label { display: block; font-weight: 700; color: var(--text); font-size: 0.9rem; margin-bottom: 8px; }
         .doc-item {
-            background: var(--surface2) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 10px !important;
-            padding: 12px 14px !important;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.18s ease !important;
+            background: var(--surface2) !important; border: 1px solid var(--border) !important;
+            border-radius: 10px !important; padding: 12px 14px !important;
+            margin-bottom: 8px; cursor: pointer; transition: all 0.18s ease !important;
             border-left: 3px solid transparent !important;
-            box-shadow: none !important;
         }
-        .doc-item:hover {
-            transform: translateX(4px) !important;
-            border-left-color: var(--accent) !important;
-            border-color: var(--border2) !important;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
-        }
-        .doc-name  { font-weight: 700; color: var(--text)      !important; font-size: 0.95rem; }
-        .doc-date  { font-size: 0.78rem; color: var(--text-muted) !important; }
-        .doc-meta  {
-            display: flex;
-            gap: 1.2rem;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid var(--border) !important;
-            font-size: 0.78rem;
-        }
+        .doc-item:hover { transform: translateX(4px) !important; border-left-color: var(--accent) !important; }
+        .doc-name { font-weight: 700; color: var(--text) !important; font-size: 0.95rem; }
+        .doc-date { font-size: 0.78rem; color: var(--text-muted) !important; }
+        .doc-meta { display: flex; gap: 1.2rem; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border) !important; font-size: 0.78rem; }
         .doc-rows, .doc-cols { color: var(--text-dim) !important; }
 
         /* ── NEW FILE BUTTON ── */
         #newFileBtn {
-            background: var(--accent) !important;
-            color: #000 !important;
-            font-weight: 700 !important;
-            border-radius: 8px !important;
-            border: none !important;
+            background: var(--accent) !important; color: #000 !important;
+            font-weight: 700 !important; border-radius: 8px !important; border: none !important;
             box-shadow: 0 3px 10px rgba(247,197,32,0.25) !important;
         }
-        #newFileBtn:hover {
-            background: #ffd84a !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 6px 18px rgba(247,197,32,0.35) !important;
-        }
+        #newFileBtn:hover { background: #ffd84a !important; transform: translateY(-1px) !important; }
 
         /* ── LOADING ── */
         #loading.hidden { display: none !important; }
-
         .spinner {
-            width: 36px !important;
-            height: 36px !important;
-            border: 3px solid var(--border2) !important;
-            border-top-color: var(--accent) !important;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 14px;
+            width: 36px !important; height: 36px !important;
+            border: 3px solid var(--border2) !important; border-top-color: var(--accent) !important;
+            border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        #loading p {
-            color: var(--text-dim) !important;
-            font-size: 0.82rem;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }
+        #loading p { color: var(--text-dim) !important; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
 
         /* ── ERROR BOX ── */
         .error-box {
-            background: rgba(248,113,113,0.08) !important;
-            border: 1px solid rgba(248,113,113,0.25) !important;
-            border-left: none !important;
-            border-radius: 10px !important;
-            box-shadow: none !important;
-            padding: 14px 18px !important;
+            background: rgba(248,113,113,0.08) !important; border: 1px solid rgba(248,113,113,0.25) !important;
+            border-radius: 10px !important; padding: 14px 18px !important;
         }
-        .error-box h3 {
-            color: var(--red) !important;
-            -webkit-text-fill-color: var(--red) !important;
-            font-size: 1rem !important;
+        .error-box h3 { color: var(--red) !important; -webkit-text-fill-color: var(--red) !important; font-size: 1rem !important; }
+        .error-box p  { color: #fca5a5 !important; }
+
+        /* ══════════════════════════════════════════════════════════
+           MONTH NAVIGATION
+        ══════════════════════════════════════════════════════════ */
+        #monthNavSection {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 28px;
         }
-        .error-box p { color: #fca5a5 !important; }
+
+        /* Year + title row */
+        .month-nav-header {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap; gap: 12px;
+            margin-bottom: 20px;
+        }
+        .month-nav-title {
+            font-size: 1rem; font-weight: 800; color: var(--text) !important;
+            -webkit-text-fill-color: var(--text) !important;
+            display: flex; align-items: center; gap: 8px;
+        }
+        #yearPills { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        /* 12-month grid */
+        #monthGrid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .month-cell {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: default;
+            transition: all 0.15s ease;
+            opacity: 0.35;
+            user-select: none;
+        }
+        .month-cell.has-data {
+            opacity: 1;
+            cursor: pointer;
+        }
+        .month-cell.has-data:hover {
+            border-color: var(--accent);
+            background: var(--bg);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+        }
+        .month-cell.active {
+            background: var(--accent-glow) !important;
+            border-color: var(--accent) !important;
+            opacity: 1;
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .month-cell-name {
+            font-size: 0.7rem; font-weight: 700; color: var(--text-dim);
+            text-transform: uppercase; letter-spacing: 0.07em;
+        }
+        .month-cell.has-data .month-cell-name { color: var(--text-muted); }
+        .month-cell.active  .month-cell-name { color: var(--accent); }
+        .month-cell-shifts {
+            font-size: 1.15rem; font-weight: 700;
+            color: var(--accent); margin: 5px 0 2px;
+        }
+        .month-cell-sub {
+            font-size: 0.65rem; color: var(--text-dim);
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .month-cell-amount {
+            font-size: 0.72rem; font-weight: 700;
+            color: var(--accent); margin-top: 3px;
+        }
+
+        /* Filter pill row */
+        .month-pills-row {
+            display: flex; align-items: center;
+            gap: 8px; flex-wrap: wrap;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .month-pill {
+            padding: 5px 14px; border-radius: 20px;
+            border: 1px solid var(--border2);
+            background: var(--surface2);
+            color: var(--text-muted);
+            font-family: inherit; font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+        }
+        .month-pill:hover { border-color: var(--accent); color: var(--text); }
+        .month-pill.active {
+            background: var(--accent); border-color: var(--accent);
+            color: #000; font-weight: 700;
+        }
+
+        /* Active month banner */
+        #activeMonthBanner {
+            display: none;
+            align-items: center; justify-content: space-between;
+            background: var(--accent-glow);
+            border: 1px solid var(--accent-dim);
+            border-radius: 10px; padding: 10px 16px;
+            margin-bottom: 20px;
+            font-size: 0.88rem; font-weight: 700; color: var(--accent);
+        }
+        #activeMonthBanner button {
+            background: none; border: none; cursor: pointer;
+            color: var(--accent-dim); font-size: 1rem; padding: 0 4px;
+            transition: color 0.15s;
+        }
+        #activeMonthBanner button:hover { color: var(--accent); }
 
         /* ── STATS GRID ── */
         .stat-tile {
-            background: var(--surface) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 12px !important;
-            box-shadow: none !important;
-            padding: 20px 22px !important;
-            transition: background 0.15s, transform 0.15s;
+            background: var(--surface) !important; border: 1px solid var(--border) !important;
+            border-radius: 0 !important; padding: 20px 22px !important;
+            display: flex; flex-direction: column; gap: 6px;
+            transition: background 0.15s;
         }
-        .stat-tile:hover {
-            background: var(--surface2) !important;
-            transform: translateY(-1px);
-        }
+        .stat-tile:hover { background: var(--surface2) !important; }
         .stat-tile-label {
-            display: block;
-            color: var(--text-dim) !important;
-            font-size: 0.72rem !important;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            margin-bottom: 8px !important;
+            display: block; color: var(--text-dim) !important;
+            font-size: 0.72rem !important; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.07em;
         }
         .stat-tile-value {
-            font-size: 1.5rem !important;
-            font-weight: 700 !important;
+            font-size: 1.5rem !important; font-weight: 700 !important;
             color: var(--accent) !important;
-        }
-        /* Individual stat value IDs */
-        #totalRows, #totalAmount, #totalKms, #uniqueDrivers {
-            color: var(--accent) !important;
-            font-size: 1.5rem !important;
-            font-weight: 700 !important;
         }
 
         /* ── DRIVER CARDS ── */
-        #summaryGrid {
-            display: grid !important;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 12px;
-        }
-
+        #summaryGrid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
         .driver-card {
-            background: var(--surface) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 12px !important;
-            padding: 18px !important;
-            cursor: pointer;
-            transition: all 0.18s ease !important;
-            box-shadow: none !important;
-            position: relative;
-            overflow: hidden;
+            background: var(--surface) !important; border: 1px solid var(--border) !important;
+            border-radius: 12px !important; padding: 18px !important; cursor: pointer;
+            transition: all 0.18s ease !important; position: relative; overflow: hidden;
         }
         .driver-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: var(--accent);
-            transform: scaleX(0);
-            transition: transform 0.18s ease;
-            transform-origin: left;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--accent); transform: scaleX(0); transition: transform 0.18s ease; transform-origin: left;
         }
-        .driver-card:hover {
-            background: var(--surface2) !important;
-            border-color: var(--border2) !important;
-            transform: translateY(-2px) scale(1) !important;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.4) !important;
-        }
+        .driver-card:hover { background: var(--surface2) !important; border-color: var(--border2) !important; transform: translateY(-2px) !important; box-shadow: 0 12px 32px rgba(0,0,0,0.4) !important; }
         .driver-card:hover::before { transform: scaleX(1); }
-
-        .driver-card-header {
-            display: flex !important;
-            align-items: center !important;
-            gap: 14px !important;
-            margin-bottom: 16px !important;
-        }
-
-        .driver-name-block {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 3px !important;
-            min-width: 0 !important;
-            flex: 1 !important;
-        }
-
+        .driver-card-header { display: flex !important; align-items: center !important; gap: 14px !important; margin-bottom: 16px !important; }
+        .driver-name-block { display: flex !important; flex-direction: column !important; gap: 3px !important; min-width: 0 !important; flex: 1 !important; }
         .driver-avatar {
-            width: 52px !important;
-            height: 52px !important;
-            background: var(--surface2) !important;
-            border: 1px solid var(--border2) !important;
-            border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            flex-shrink: 0 !important;
-            box-shadow: none !important;
-            color: var(--text-dim) !important;
+            width: 52px !important; height: 52px !important; background: var(--surface2) !important;
+            border: 1px solid var(--border2) !important; border-radius: 50% !important;
+            display: flex !important; align-items: center !important; justify-content: center !important;
+            flex-shrink: 0 !important; color: var(--text-dim) !important;
         }
-        .driver-avatar svg {
-            width: 26px;
-            height: 26px;
-        }
-        .driver-name {
-            font-weight: 800 !important;
-            font-size: 1rem !important;
-            color: var(--text) !important;
-            margin-bottom: 2px !important;
-        }
-        .driver-hint {
-            font-size: 0.72rem !important;
-            color: var(--text-dim) !important;
-        }
-
-        .card-metrics {
-            display: grid !important;
-            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)) !important;
-            gap: 8px !important;
-            margin-top: 14px !important;
-            padding-top: 0 !important;
-            border-top: none !important;
-        }
-        .metric {
-            background: var(--bg) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 8px !important;
-            padding: 9px 10px !important;
-            text-align: center;
-            flex: unset !important;
-        }
-        .metric-label {
-            font-size: 0.63rem !important;
-            color: var(--text-dim) !important;
-            font-weight: 600 !important;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            margin-bottom: 4px !important;
-        }
-        .metric-val {
-            font-size: 0.88rem !important;
-            font-weight: 700 !important;
-            color: var(--text) !important;
-        }
+        .driver-avatar svg { width: 26px; height: 26px; }
+        .driver-name  { font-weight: 800 !important; font-size: 1rem !important; color: var(--text) !important; }
+        .driver-hint  { font-size: 0.72rem !important; color: var(--text-dim) !important; }
+        .card-metrics { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)) !important; gap: 8px !important; margin-top: 14px !important; }
+        .metric { background: var(--bg) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; padding: 9px 10px !important; text-align: center; }
+        .metric-label { font-size: 0.63rem !important; color: var(--text-dim) !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px !important; }
+        .metric-val { font-size: 0.88rem !important; font-weight: 700 !important; color: var(--text) !important; }
         .metric-val.hi    { color: var(--accent) !important; font-size: 1rem !important; }
         .metric-val.green { color: var(--green)  !important; }
 
         /* ── TABLE CARD ── */
-        .table-card {
-            background: var(--surface) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 12px !important;
-            box-shadow: none !important;
-        }
-
-        /* Table toolbar (sticky header row) */
-        .table-card > div:first-child,
-        .table-card .sticky {
-            background: var(--surface) !important;
-            border-bottom: 1px solid var(--border) !important;
-            box-shadow: none !important;
-        }
-
-        /* "Ny fil" button in toolbar */
-        .bg-gray-600 {
-            background: var(--surface2) !important;
-            border: 1px solid var(--border2) !important;
-            color: var(--text-muted) !important;
-        }
-        .bg-gray-600:hover, .hover\:bg-gray-700:hover {
-            background: var(--border2) !important;
-            color: var(--text) !important;
-        }
+        .table-card { background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: 12px !important; }
+        .table-card > div:first-child, .table-card .sticky { background: var(--surface) !important; border-bottom: 1px solid var(--border) !important; }
+        .bg-gray-600 { background: var(--surface2) !important; border: 1px solid var(--border2) !important; color: var(--text-muted) !important; }
+        .bg-gray-600:hover { background: var(--border2) !important; color: var(--text) !important; }
 
         /* ── SELECTS ── */
         select {
-            appearance: none !important;
-            background: var(--surface2) !important;
-            border: 1px solid var(--border2) !important;
-            border-radius: 6px !important;
-            color: var(--text) !important;
-            font-family: var(--font-body) !important;
-            font-size: 0.875rem !important;
-            font-weight: 500 !important;
-            padding: 9px 32px 9px 12px !important;
-            cursor: pointer;
-            transition: border-color 0.15s !important;
+            appearance: none !important; background: var(--surface2) !important;
+            border: 1px solid var(--border2) !important; border-radius: 6px !important;
+            color: var(--text) !important; font-family: var(--font-body) !important;
+            font-size: 0.875rem !important; font-weight: 500 !important;
+            padding: 9px 32px 9px 12px !important; cursor: pointer; transition: border-color 0.15s !important;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237B849A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
-            background-repeat: no-repeat !important;
-            background-position: right 10px center !important;
+            background-repeat: no-repeat !important; background-position: right 10px center !important;
         }
-        select:focus {
-            outline: none !important;
-            border-color: var(--accent) !important;
-            box-shadow: 0 0 0 3px var(--accent-glow) !important;
-            --tw-ring-shadow: none !important;
-        }
+        select:focus { outline: none !important; border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-glow) !important; }
         select option { background: #1a1f2e; color: var(--text); }
 
         /* ── TABLE ── */
-        .table-container {
-            overflow: auto;
-            max-height: 520px;
-        }
-
+        .table-container { overflow: auto; max-height: 520px; }
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
-
         thead { position: sticky; top: 0; z-index: 10; }
-
-        th {
-            background: var(--surface2) !important;
-            padding: 12px 14px !important;
-            font-size: 0.7rem !important;
-            font-weight: 700;
-            letter-spacing: 0.07em;
-            text-transform: uppercase;
-            color: var(--text-muted) !important;
-            border-bottom: 2px solid var(--border) !important;
-            white-space: nowrap;
-        }
+        th { background: var(--surface2) !important; padding: 12px 14px !important; font-size: 0.7rem !important; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted) !important; border-bottom: 2px solid var(--border) !important; white-space: nowrap; }
         th:first-child { color: var(--accent) !important; }
-
-        td {
-            padding: 11px 14px !important;
-            border-bottom: 1px solid var(--border) !important;
-            font-size: 0.875rem !important;
-            font-weight: 500;
-            color: var(--text-muted) !important;
-            white-space: nowrap;
-        }
+        td { padding: 11px 14px !important; border-bottom: 1px solid var(--border) !important; font-size: 0.875rem !important; font-weight: 500; color: var(--text-muted) !important; white-space: nowrap; }
         tr:last-child td { border-bottom: none !important; }
+        tbody tr:hover td { background: rgba(247,197,32,0.04) !important; color: var(--text) !important; }
+        .driver-highlight { background: rgba(247,197,32,0.1) !important; color: var(--accent) !important; font-weight: 800 !important; font-size: 0.9rem; border-radius: 4px; padding-left: 10px !important; }
+        .total-row td { background: rgba(247,197,32,0.06) !important; font-weight: 700 !important; color: var(--text-muted) !important; border-top: 1px solid var(--border2) !important; border-bottom: 1px solid var(--border2) !important; font-size: 0.85rem !important; }
 
-        tbody tr:hover td {
-            background: rgba(247,197,32,0.04) !important;
-            color: var(--text) !important;
+        /* ── BACK + ADD FILE BUTTONS ── */
+        #backBtn { display: none; }
+        #backBtn.visible { display: flex; align-items: center; gap: 6px; }
+        #backBtn {
+            background: transparent; border: 1px solid var(--border2); color: var(--text-muted);
+            font-family: inherit; font-size: 0.875rem; font-weight: 600;
+            padding: 6px 14px 6px 10px; border-radius: 6px; cursor: pointer; transition: all 0.15s ease;
         }
+        #backBtn:hover { border-color: var(--accent); color: var(--text); }
+        #backBtn svg { flex-shrink: 0; }
 
-        .driver-highlight {
-            background: rgba(247,197,32,0.1) !important;
-            color: var(--accent) !important;
-            font-weight: 800 !important;
-            font-size: 0.9rem;
-            border-radius: 4px;
-            padding-left: 10px !important;
+        /* ── ADD FILE BUTTON (results toolbar) ── */
+        .add-file-btn {
+            width: 100%; padding: 9px 16px;
+            background: var(--surface2); border: 1px solid var(--border2);
+            color: var(--text-muted);
+            font-family: inherit; font-size: 0.875rem; font-weight: 600;
+            border-radius: 6px; cursor: pointer; transition: all 0.15s;
         }
-
-        .total-row td {
-            background: rgba(247,197,32,0.06) !important;
-            font-weight: 700 !important;
-            color: var(--text-muted) !important;
-            border-top: 1px solid var(--border2) !important;
-            border-bottom: 1px solid var(--border2) !important;
-            font-size: 0.85rem !important;
-        }
+        .add-file-btn:hover { border-color: var(--accent); color: var(--accent); }
 
         /* ── SCROLLBAR ── */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -495,76 +427,31 @@
         ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
 
+        /* ── CHART ── */
+        #chartSection { margin-top: 24px; }
+        .chart-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .chart-type-toggle { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
         /* ── ANIMATIONS ── */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeInUp 0.4s ease forwards; }
 
-        /* ── DEBUG ── */
-        #debugConsole {
-            background: var(--surface) !important;
-            color: var(--green) !important;
-            border-top: 1px solid var(--border);
-        }
-
-        /* ── BACK BUTTON ── */
-        #backBtn {
-            display: none;
-        }
-        #backBtn.visible {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        #backBtn {
-            background: transparent;
-            border: 1px solid var(--border2);
-            color: var(--text-muted);
-            font-family: inherit;
-            font-size: 0.875rem;
-            font-weight: 600;
-            padding: 6px 14px 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-        #backBtn:hover {
-            border-color: var(--accent);
-            color: var(--text);
-        }
-        #backBtn svg { flex-shrink: 0; }
-
-        /* ── CHART MOBILE ── */
-        @media (max-width: 640px) {
-            .chart-controls-grid {
-                grid-template-columns: 1fr 1fr !important;
-            }
-            .chart-controls-grid .chart-reset-btn {
-                grid-column: 1 / -1;
-            }
-            .chart-type-toggle {
-                flex-wrap: wrap;
-            }
-            #chartDriverChips {
-                display: none !important;
-            }
-            #shiftChart {
-                max-height: 260px !important;
-            }
-            .chart-header-row {
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                gap: 10px !important;
-            }
-        }
-
+        /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
             .grid-cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
             #summaryGrid  { grid-template-columns: 1fr !important; }
-            table { min-width: 700px; }
-            td, th { padding: 10px 10px !important; }
+            #monthGrid    { grid-template-columns: repeat(3, 1fr) !important; }
+            table         { min-width: 700px; }
+            td, th        { padding: 10px !important; }
+        }
+        @media (max-width: 480px) {
+            #monthGrid    { grid-template-columns: repeat(2, 1fr) !important; }
+            .month-pills-row { display: none; } /* too crowded on tiny screens */
+        }
+        @media (max-width: 640px) {
+            #chartDriverChips { display: none !important; }
+            #shiftChart { max-height: 260px !important; }
+            .chart-header-row { flex-direction: column !important; align-items: flex-start !important; }
         }
     </style>
 </head>
@@ -579,8 +466,8 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <!-- Back button — shown only when results are visible -->
-                <button id="backBtn" onclick="showUploadSection()">
+                <!-- Back button -->
+                <button id="backBtn" onclick="showUploadSection(false)">
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                     </svg>
@@ -599,29 +486,41 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
 
-        <!-- Upload Section (shown initially) -->
+        <!-- ═══════════════════════════════════════════════════════
+             UPLOAD SECTION
+        ═══════════════════════════════════════════════════════ -->
         <section id="uploadSection" class="fade-in">
-            <div class="grid md:grid-cols-2 gap-6 items-center mb-10">
+            <div class="grid md:grid-cols-2 gap-6 items-start mb-10">
+
+                <!-- LEFT: Info + Loaded files + Recent docs -->
                 <div>
                     <h2 class="text-3xl font-bold text-gray-800 mb-4" data-i18n="uploadTitle">Last opp<br>Excel-fil</h2>
                     <p class="text-gray-600 mb-6" data-i18n="uploadSub">Støtter .xlsx og .xls — gjenkjenner sjåførkolonne automatisk</p>
+
+                    <!-- Loaded Files List (shown when files are queued) -->
+                    <div id="loadedFilesSection" style="display:none;">
+                        <h3>
+                            <span>📂</span>
+                            <span data-i18n="loadedFilesTitle">Lastede filer</span>
+                            <span id="loadedFilesCount" style="font-size:0.72rem;background:var(--surface2);border:1px solid var(--border2);color:var(--text-muted);border-radius:10px;padding:1px 10px;font-weight:600;margin-left:4px;"></span>
+                        </h3>
+                        <div id="loadedFilesItems"></div>
+                        <button id="viewResultsBtn" onclick="document.getElementById('resultsSection').style.display='block'; document.getElementById('uploadSection').style.display='none'; document.getElementById('backBtn').classList.add('visible');">
+                            Se resultater →
+                        </button>
+                    </div>
 
                     <!-- Recent Documents List -->
                     <div id="recentListContainer" class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
                         <h3 class="text-lg font-semibold mb-4 text-gray-800" data-i18n="recentDocsTitle">Nylige dokumenter</h3>
                         <p id="noRecentHint" style="display:none; color:var(--text-dim); font-size:0.75rem;">Ingen lagrede dokumenter</p>
                     </div>
-
-                    <!-- New File Button -->
-                    <button onclick="showUploadSection()" id="newFileBtn"
-                        class="hidden px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
-                        + Ny fil
-                    </button>
                 </div>
 
-                <!-- Drop Zone -->
-                <div id="dropZone" class="p-8 flex flex-col items-center justify-center min-h-[300px] text-center cursor-pointer relative">
-                    <input type="file" id="fileInput" accept=".xlsx,.xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                <!-- RIGHT: Drop Zone -->
+                <div id="dropZone" class="p-8 flex flex-col items-center justify-center min-h-[320px] text-center cursor-pointer relative">
+                    <input type="file" id="fileInput" accept=".xlsx,.xls" multiple
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
 
                     <div class="mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-yellow-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -629,11 +528,12 @@
                         </svg>
                     </div>
 
-                    <p class="text-lg font-semibold text-gray-800 mb-2" data-i18n="chooseFile">Velg fil</p>
-                    <p class="text-sm text-gray-500 mb-4" data-i18n="dragDrop">Klikk eller dra og slipp Excel-filen her</p>
+                    <p class="text-lg font-semibold text-gray-800 mb-2" data-i18n="chooseFile">Velg én eller flere filer</p>
+                    <p class="text-sm text-gray-500 mb-1" data-i18n="dragDrop">Klikk eller dra og slipp Excel-filen her</p>
+                    <p class="text-xs" style="color:var(--text-dim); margin-top:4px;">Kombiner måneder ved å velge flere filer samtidig</p>
 
                     <!-- Error container -->
-                    <div id="errorContainer"></div>
+                    <div id="errorContainer" style="width:100%;margin-top:12px;"></div>
                 </div>
             </div>
 
@@ -644,33 +544,60 @@
             </div>
         </section>
 
-        <!-- Results Section (shown after upload) -->
+        <!-- ═══════════════════════════════════════════════════════
+             RESULTS SECTION
+        ═══════════════════════════════════════════════════════ -->
         <section id="resultsSection" style="display: none;">
 
-            <!-- Stats Grid — populated by updateStats() in script.js -->
+            <!-- Active Month Banner (shown when a month is selected) -->
+            <div id="activeMonthBanner">
+                <span id="activeMonthLabel"></span>
+                <button onclick="clearMonthFilter()" title="Fjern månedfilter">✕ Fjern filter</button>
+            </div>
+
+            <!-- ── MONTH NAVIGATION ── -->
+            <div id="monthNavSection" class="fade-in" style="display:none;">
+                <!-- Header: title + year pills -->
+                <div class="month-nav-header">
+                    <div class="month-nav-title">
+                        <span>📅</span>
+                        <span data-i18n="yearViewTitle">Årsvisning</span>
+                    </div>
+                    <div id="yearPills"></div>
+                </div>
+
+                <!-- 12-month grid -->
+                <div id="monthGrid"></div>
+
+                <!-- Quick filter pills -->
+                <div class="month-pills-row">
+                    <button class="month-pill active" id="allMonthsPill" onclick="clearMonthFilter()" data-i18n="allMonthsLabel">Alle måneder</button>
+                    <div id="monthPillsContainer" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                </div>
+            </div>
+
+            <!-- ── STATS GRID ── -->
             <div id="statsGrid" class="mb-8 fade-in" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;"></div>
 
-            <!-- Driver Cards -->
+            <!-- ── DRIVER CARDS ── -->
             <div class="mb-8 fade-in">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <h2 class="text-xl font-bold text-gray-800 mb-1 flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     <span data-i18n="cardsTitle">Sjåføroversikt</span>
                 </h2>
                 <p class="text-sm text-gray-600 mb-6" data-i18n="cardsSub">Klikk på et kort for å filtrere tabellen</p>
-
-                <!-- Summary Grid -->
                 <div id="summaryGrid"></div>
             </div>
 
-            <!-- Table Card -->
+            <!-- ── TABLE ── -->
             <div class="table-card fade-in">
                 <div class="p-6 border-b border-gray-200 bg-white">
                     <h2 class="text-xl font-bold text-gray-800 mb-4" data-i18n="tableTitle">Skift</h2>
 
-                    <!-- Filters -->
-                    <div class="grid md:grid-cols-3 gap-4">
+                    <!-- Filters — 4 columns -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide" data-i18n="filterBy">FILTRER:</label>
                             <select id="driverFilter" class="w-full border border-gray-300 rounded-lg text-sm">
@@ -681,16 +608,27 @@
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide" data-i18n="sortBy">SORTER:</label>
                             <select id="sortSelect" class="w-full border border-gray-300 rounded-lg text-sm">
-                                <option value="none"         data-i18n="sortNone">Ingen</option>
-                                <option value="amount_desc"  data-i18n="sortWages">Lønngrunnlag ↓</option>
-                                <option value="kms_desc"     data-i18n="sortKms">KM ↓</option>
+                                <option value="none"          data-i18n="sortNone">Ingen</option>
+                                <option value="amount_desc"   data-i18n="sortWages">Lønngrunnlag ↓</option>
+                                <option value="kms_desc"      data-i18n="sortKms">KM ↓</option>
                             </select>
                         </div>
 
-                        <div class="flex items-end">
-                            <button onclick="showUploadSection()"
+                        <!-- Add File -->
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide" data-i18n="addFileBtn">LEGG TIL:</label>
+                            <input type="file" id="addFileInput" accept=".xlsx,.xls" multiple style="display:none;" />
+                            <button class="add-file-btn" onclick="document.getElementById('addFileInput').click()">
+                                + Legg til fil
+                            </button>
+                        </div>
+
+                        <!-- New Analysis -->
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide" data-i18n="newAnalysis">NY ANALYSE:</label>
+                            <button onclick="showUploadSection(true)"
                                 class="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium">
-                                + Ny fil
+                                Ny analyse
                             </button>
                         </div>
                     </div>
@@ -705,83 +643,84 @@
                 </div>
             </div>
 
-            <!-- Chart Section -->
-            <div class="table-card fade-in" id="chartSection" style="margin-top:24px;">
+            <!-- ── CHART ── -->
+            <div class="table-card fade-in" id="chartSection">
                 <div class="p-5 border-b border-gray-200 bg-white">
-                    <div class="chart-header-row" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                    <div class="chart-header-row">
                         <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color:var(--accent)">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
                             Graf per skift
                         </h2>
-                    <div class="chart-type-toggle" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                        <div style="display:flex; gap:4px; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:3px;">
-                            <button id="chartTypebar" onclick="setChartType('bar')" style="
-                                padding:6px 14px; border-radius:6px; border:none; cursor:pointer;
-                                font-family:inherit; font-size:0.82rem; font-weight:600;
-                                background:var(--accent); color:#000; transition:all 0.15s;
-                            " title="Søylediagram">▌▌ Søyle</button>
-                            <button id="chartTypeline" onclick="setChartType('line')" style="
-                                padding:6px 14px; border-radius:6px; border:none; cursor:pointer;
-                                font-family:inherit; font-size:0.82rem; font-weight:600;
-                                background:transparent; color:var(--text-muted); transition:all 0.15s;
-                            " title="Linjediagram">∿ Linje</button>
+                        <div class="chart-type-toggle">
+                            <div style="display:flex;gap:4px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:3px;">
+                                <button id="chartTypebar" onclick="setChartType('bar')" style="padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:600;background:var(--accent);color:#000;transition:all 0.15s;">▌▌ Søyle</button>
+                                <button id="chartTypeline" onclick="setChartType('line')" style="padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:600;background:transparent;color:var(--text-muted);transition:all 0.15s;">∿ Linje</button>
+                            </div>
+                            <button id="chartAccumBtn" onclick="toggleAccumulate()" style="padding:6px 14px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text-muted);font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap;">∑ Akkumulert</button>
                         </div>
-                        <button id="chartAccumBtn" onclick="toggleAccumulate()" style="
-                            padding:6px 14px; border-radius:8px; border:1px solid var(--border2);
-                            background:transparent; color:var(--text-muted);
-                            font-family:inherit; font-size:0.82rem; font-weight:600;
-                            cursor:pointer; transition:all 0.15s; white-space:nowrap;
-                        " title="Vis akkumulert sum over skift">∑ Akkumulert</button>
                     </div>
-                    </div>
-                    <div class="chart-controls-grid" style="display:grid; grid-template-columns:1fr 1fr auto; gap:12px; align-items:end;">
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide" data-i18n="chartDriver">Sjåfør</label>
-                            <select id="chartDriverFilter">
-                                <option value="" data-i18n="chartAll">Alle sjåfører</option>
-                            </select>
+                            <select id="chartDriverFilter"><option value="" data-i18n="chartAll">Alle sjåfører</option></select>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide" data-i18n="chartMetric">Metrikk</label>
                             <select id="chartMetricFilter">
-                                <option value="Lønnsgrunnlag"         data-i18n="mLønn">Lønnsgrunnlag</option>
+                                <option value="Lønnsgrunnlag"           data-i18n="mLønn">Lønnsgrunnlag</option>
                                 <option value="Innkjørt total Lav sats" data-i18n="mInnkjort">Innkjørt total</option>
-                                <option value="Faktisk kont."         data-i18n="mKontant">Kontant</option>
-                                <option value="Km total"              data-i18n="mKmTotal">KM totalt</option>
-                                <option value="Km opptatt"            data-i18n="mKmOcc">KM m/passasjer</option>
-                                <option value="Antall turer"          data-i18n="mTurer">Antall turer</option>
-                                <option value="Effektiv timer"        data-i18n="mTimer">Effektive timer</option>
+                                <option value="Faktisk kont."           data-i18n="mKontant">Kontant</option>
+                                <option value="Km total"                data-i18n="mKmTotal">KM totalt</option>
+                                <option value="Km opptatt"              data-i18n="mKmOcc">KM m/passasjer</option>
+                                <option value="Antall turer"            data-i18n="mTurer">Antall turer</option>
+                                <option value="Effektiv timer"          data-i18n="mTimer">Effektive timer</option>
                             </select>
                         </div>
-                        <button onclick="resetChartFilter()" class="chart-reset-btn" style="
-                            background:var(--surface2); border:1px solid var(--border2);
-                            color:var(--text-muted); font-family:inherit; font-size:0.85rem;
-                            font-weight:600; padding:9px 16px; border-radius:8px;
-                            cursor:pointer; white-space:nowrap; transition:all 0.15s;
-                            height:40px; align-self:end;
-                        " data-i18n="chartReset" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">
-                            ✕ Alle
-                        </button>
+                        <button onclick="resetChartFilter()" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text-muted);font-family:inherit;font-size:0.85rem;font-weight:600;padding:9px 16px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:all 0.15s;height:40px;align-self:end;" data-i18n="chartReset" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">✕ Alle</button>
                     </div>
-                    <!-- Clickable driver chips -->
-                    <div id="chartDriverChips" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;"></div>
+
+                    <!-- Driver chips -->
+                    <div id="chartDriverChips" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;"></div>
                 </div>
-                <div style="padding:24px 28px; position:relative;">
+
+                <div style="padding:24px 28px;position:relative;">
                     <canvas id="shiftChart" style="max-height:380px;"></canvas>
-                    <p id="chartEmpty" style="display:none; text-align:center; color:var(--text-dim); font-size:0.9rem; padding:60px 0;">Ingen data å vise</p>
+                    <p id="chartEmpty" style="display:none;text-align:center;color:var(--text-dim);font-size:0.9rem;padding:60px 0;">Ingen data å vise</p>
                 </div>
             </div>
 
         </section>
-
     </main>
 
-    <!-- Debug Console (hidden by default) -->
-    <pre id="debugConsole" style="display:none; position:fixed; bottom:0; left:0; right:0; padding:1rem; font-size:0.75rem; z-index:1000;"></pre>
-
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="script.js"></script>
+
+    <!-- Active month banner sync -->
+    <script>
+        // Patch setMonthFilter and clearMonthFilter to update the banner
+        const _origSetMF = setMonthFilter;
+        setMonthFilter = function(month, year) {
+            _origSetMF(month, year);
+            const banner = document.getElementById('activeMonthBanner');
+            const label  = document.getElementById('activeMonthLabel');
+            const abbr   = currentLang === 'tr'
+                ? ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık']
+                : ['Januar','Februar','Mars','April','Mai','Juni','Juli','August','September','Oktober','November','Desember'];
+            if (banner && label) {
+                label.textContent = `📅 ${abbr[month]} ${year}`;
+                banner.style.display = 'flex';
+            }
+        };
+        const _origClearMF = clearMonthFilter;
+        clearMonthFilter = function() {
+            _origClearMF();
+            const banner = document.getElementById('activeMonthBanner');
+            if (banner) banner.style.display = 'none';
+        };
+    </script>
 </body>
 </html>
